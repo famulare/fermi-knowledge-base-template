@@ -1,0 +1,24 @@
+# macOS
+**/.DS_Store
+
+# Python virtual environment
+.venv/
+__pycache__/
+*.pyc
+
+# Ephemeral views (regenerated each session)
+views/ephemeral/
+
+# Local-only Claude settings
+.claude/settings.local.json
+
+# IDE artifacts
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temp files
+*.tmp
+*~
+*.log

@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# Fermi Knowledge Base — List Configuration Tokens
+# Shows all CONFIGURE tokens, their locations, and status
+
+set -e
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Colors
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
+
+echo -e "${BOLD}=== Fermi KB Configuration Tokens ===${NC}"
+echo ""
+
+echo -e "${BOLD}Required Tokens:${NC}"
+echo ""
+
+# user_name in system.yml
+echo -e "  ${CYAN}user_name${NC}"
+echo "    File: config/system.yml"
+echo "    Description: Your name (used in origin labels and commits)"
+if grep -q '\[CONFIGURE\]' "$REPO_ROOT/config/system.yml" 2>/dev/null; then
+    echo -e "    Status: ${RED}NOT SET${NC}"
+else
+    USER_NAME=$(grep "name:" "$REPO_ROOT/config/system.yml" | head -1 | sed -E 's/.*name: *"?([^"#]*)"?.*/\1/' | sed 's/ *$//')
+    echo -e "    Status: ${GREEN}SET${NC} → $USER_NAME"
+fi
+echo ""
+
+echo -e "${BOLD}Optional Tokens:${NC}"
+echo ""
+
+# persona_name in system.yml
+echo -e "  ${CYAN}persona_name${NC}"
+echo "    File: config/system.yml"
+echo "    Default: Fermi"
+echo "    Description: Your knowledge partner's name"
+PERSONA_NAME=$(grep "name:" "$REPO_ROOT/config/system.yml" | tail -1 | sed -E 's/.*name: *"?([^"#]*)"?.*/\1/' | sed 's/ *$//')
+if [ "$PERSONA_NAME" = "Fermi" ]; then
+    echo -e "    Status: ${GREEN}DEFAULT${NC} → Fermi"
+else
+    echo -e "    Status: ${GREEN}CUSTOM${NC} → $PERSONA_NAME"
+fi
+echo ""
+
+# communication_style in knowledge_partner_profile.md
+echo -e "  ${CYAN}communication_style${NC}"
+echo "    File: context/knowledge_partner_profile.md"
+echo "    Default: Precision over politeness, depth over warmth"
+echo "    Description: How your knowledge partner communicates"
+if grep -q 'CONFIGURE:communication_style' "$REPO_ROOT/context/knowledge_partner_profile.md" 2>/dev/null; then
+    echo -e "    Status: ${GREEN}DEFAULT${NC}"
+else
+    echo -e "    Status: ${GREEN}CONFIGURED${NC}"
+fi
+echo ""
+
+# timezone in system.yml
+echo -e "  ${CYAN}timezone${NC}"
+echo "    File: config/system.yml"
+echo "    Default: America/Los_Angeles"
+echo "    Description: Your timezone"
+TIMEZONE=$(grep "timezone:" "$REPO_ROOT/config/system.yml" | sed -E 's/.*timezone: *"?([^"#]*)"?.*/\1/' | sed 's/ *$//')
+echo -e "    Status: ${GREEN}SET${NC} → $TIMEZONE"
+echo ""
+
+echo -e "${BOLD}=== Token Locations ===${NC}"
+echo ""
+echo "All CONFIGURE references in the repository:"
+grep -rn "CONFIGURE" "$REPO_ROOT" --include="*.md" --include="*.yml" --include="*.yaml" 2>/dev/null | grep -v "node_modules" | grep -v ".git/" | grep -v "bin/list-configure" | grep -v "bin/validate-configure" | sed "s|$REPO_ROOT/||" | sed 's/^/  /' || echo "  (none found — all configured!)"
+echo ""

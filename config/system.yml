@@ -1,0 +1,9 @@
+# Fermi Knowledge Base Configuration
+# Run the SETUP workflow or bin/validate-configure after editing
+
+user:
+  name: "[CONFIGURE]"              # Required: your name (used in origin labels, commit messages)
+  timezone: "America/Los_Angeles"  # Optional: your timezone
+
+persona:
+  name: "Fermi"                    # Optional: rename your knowledge partner (default: Fermi)

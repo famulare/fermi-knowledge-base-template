@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Fermi Knowledge Base — Configuration Validator
+# Checks that all required CONFIGURE tokens have been set
+
+set -e
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ERRORS=0
+WARNINGS=0
+
+# Colors
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+echo "=== Fermi KB Configuration Validator ==="
+echo ""
+
+# Check required: config/system.yml user.name
+if grep -q '\[CONFIGURE\]' "$REPO_ROOT/config/system.yml" 2>/dev/null; then
+    echo -e "${RED}FAIL${NC} config/system.yml: user.name is not configured"
+    echo "  → Edit config/system.yml and replace [CONFIGURE] with your name"
+    ERRORS=$((ERRORS + 1))
+else
+    USER_NAME=$(grep "name:" "$REPO_ROOT/config/system.yml" | head -1 | sed -E 's/.*name: *"?([^"#]*)"?.*/\1/' | sed 's/ *$//')
+    if [ -z "$USER_NAME" ] || [ "$USER_NAME" = "name" ]; then
+        echo -e "${RED}FAIL${NC} config/system.yml: user.name appears empty"
+        ERRORS=$((ERRORS + 1))
+    else
+        echo -e "${GREEN}PASS${NC} config/system.yml: user.name = $USER_NAME"
+    fi
+fi
+
+# Check optional: CONFIGURE tokens in knowledge_partner_profile.md
+if grep -q 'CONFIGURE:user_name' "$REPO_ROOT/context/knowledge_partner_profile.md" 2>/dev/null; then
+    echo -e "${YELLOW}WARN${NC} context/knowledge_partner_profile.md: user_name token not yet populated"
+    echo "  → Run the SETUP workflow or manually replace <!-- CONFIGURE:user_name -->"
+    WARNINGS=$((WARNINGS + 1))
+else
+    echo -e "${GREEN}PASS${NC} context/knowledge_partner_profile.md: user references configured"
+fi
+
+# Check for any remaining [CONFIGURE] tokens across key files
+echo ""
+echo "Scanning for remaining CONFIGURE tokens..."
+REMAINING=$(grep -rn '\[CONFIGURE\]' "$REPO_ROOT/config/" "$REPO_ROOT/context/" 2>/dev/null | grep -v "configuration_guide" | grep -v "validate-configure" || true)
+
+if [ -n "$REMAINING" ]; then
+    echo -e "${YELLOW}WARN${NC} Remaining CONFIGURE references found:"
+    echo "$REMAINING" | sed 's/^/  /'
+    WARNINGS=$((WARNINGS + 1))
+fi
+
+echo ""
+echo "=== Results ==="
+
+if [ $ERRORS -gt 0 ]; then
+    echo -e "${RED}$ERRORS error(s)${NC}, $WARNINGS warning(s)"
+    echo ""
+    echo "Required configuration incomplete. Run the SETUP workflow:"
+    echo "  Open Claude Code and say: \"Let's run the SETUP workflow\""
+    exit 1
+elif [ $WARNINGS -gt 0 ]; then
+    echo -e "${GREEN}0 errors${NC}, ${YELLOW}$WARNINGS warning(s)${NC}"
+    echo ""
+    echo "Configuration is functional but has optional items remaining."
+    echo "Run the SETUP workflow to complete: \"Let's run the SETUP workflow\""
+    exit 0
+else
+    echo -e "${GREEN}All checks passed!${NC}"
+    echo ""
+    echo "Your Fermi Knowledge Base is fully configured."
+    exit 0
+fi
