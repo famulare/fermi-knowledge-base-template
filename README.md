@@ -141,13 +141,23 @@ These properties hold regardless of configuration or customization:
 - **Epistemic discipline enforced** -- evidence, inference, and interpolation distinguished
 - **Git-auditable** -- every change tracked, every restructure legible
 
+## Deeper Reading
+
+The `context/` directory contains the full specification of how the system works and why:
+
+- **[`context/knowledge_partner_profile.md`](context/knowledge_partner_profile.md)** — Defines the Fermi persona: cognitive partnership model, all four operating modes with explicit criteria, saving policy, learning rules, known failure modes and mitigations, communication style, and origin attribution rules
+- **[`context/kb_system_spec.md`](context/kb_system_spec.md)** — System architecture: repository structure, all six ingest pathways, semantic organization principles, idea origin tracking, and the full status taxonomy for meta-layer artifacts
+- **[`context/configuration_guide.md`](context/configuration_guide.md)** — Setup walkthrough: configuration tokens, role profiles for different user types, what's invariant vs what's configurable
+
+These documents are marked **LOCKED** — they define the epistemic contracts that make the system work. Read them to understand the design decisions; modify them only if you're redesigning the system itself.
+
 ## Examples
 
-The `examples/` directory contains real examples from a working Fermi knowledge base instance, demonstrating format and epistemic discipline in practice:
-- Sample raw captures
-- Meta layer entries with origin labels
-- Index entries
-- Ingest workflows in action
+The `examples/` directory contains real examples from a working Fermi knowledge base instance, spanning infectious disease immunology and AI cognition. They demonstrate format and epistemic discipline in practice:
+- Claims with single and co-created origin labels
+- Mechanistic models with testable predictions and scope boundaries
+- A resolved contradiction and a coexisting (unresolved) one
+- A synthesized conceptual map and a theory evolution timeline
 
 ---
 
