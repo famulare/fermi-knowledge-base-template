@@ -14,14 +14,23 @@ This directory contains real examples from a working Fermi Knowledge Base instan
 | `contradiction_cvdpv_emergence.md` | Contradiction | Resolved contradiction with multi-scale resolution |
 | `timeline_nab_immunity_evolution.md` | Timeline | Theory evolution tracking over 6 years |
 
+### AI Cognition Domain
+
+| File | Type | Demonstrates |
+|------|------|-------------|
+| `claim_norm_following_without_ownership.md` | Claim | Co-created origin label, philosophical claim with "third thing" framing |
+| `model_llm_coherence_engine.md` | Model | Mechanistic framework with testable predictions and open-system property |
+| `contradiction_llm_interiority_confidence.md` | Contradiction | Coexisting (unresolved) tension between two AI systems' self-assessments |
+
 ## How to Use These
 
 - Study the format and section structure
-- Note how origin labels are used consistently
+- Note how origin labels are used consistently — including `Co-created` for ideas that emerged in dialogue
 - See how evidence, assumptions, and uncertainty are separated
 - Observe how entries cross-reference each other
+- Compare the two contradiction examples: one resolved (cVDPV emergence), one coexisting (interiority confidence) — both are valid outcomes
 - Use as models for your own KB entries
 
 ## Note
 
-These examples are from published scientific work. Your KB entries will reflect your own domain and interests, but the structure and epistemic discipline should be similar.
+These examples span two domains — infectious disease immunology and AI cognition — from the same working knowledge base. Your KB entries will reflect your own domain and interests, but the structure and epistemic discipline should be similar.
