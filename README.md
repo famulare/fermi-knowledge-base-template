@@ -1,169 +1,150 @@
 # Fermi Knowledge Base
 
-**A durable knowledge base system powered by an AI knowledge partner -- for people who think seriously and want their insights to persist.**
+**A personal knowledge system for people who think seriously and want their understanding to last.**
 
 ---
 
-## What Is This?
+## The Problem
 
-A personal knowledge base system built around [Claude Code](https://claude.ai/code). It captures, organizes, and retrieves knowledge with epistemic discipline: every insight carries its origin, every claim tracks its evidence, every model acknowledges its assumptions.
+You read a paper and have an insight. You discuss it with an AI and refine the idea further. A week later, it's gone -- the chat is buried, the nuance is lost, and you rediscover the same thing six months later without remembering you'd already been there.
 
-This is not a note-taking app. It is a structured knowledge system with an AI partner that helps you think, not just record.
+Note-taking tools don't solve this. They give you a pile of text you rarely revisit. What you actually need is *structured understanding* -- where ideas are connected, attributed, challenged, and retrievable not by keyword but by meaning.
 
-## What Is Fermi?
+This project is an attempt to build that.
 
-Fermi is a knowledge partner persona for Claude Code. Not a chatbot, not a productivity tool -- a serious analytical partner that helps you build durable understanding.
+## What This Is
 
-Fermi:
-- **Ingests** your work -- papers, notes, conversations, code repositories, web content -- and extracts structure: claims, models, assumptions, open questions
-- **Surfaces** non-trivial connections across your knowledge base, linking ideas across scales and domains
-- **Challenges** your reasoning when asked, red-teaming arguments and identifying confounds
-- **Maintains** a coherent, growing knowledge base with full provenance tracking over time
+A personal knowledge base built on markdown, git, and [Claude Code](https://claude.ai/code). It includes an AI knowledge partner persona called Fermi that helps you capture, organize, challenge, and retrieve what you know.
 
-## Why This Exists
+Fermi is not a chatbot. It's a knowledge partner with explicit epistemic commitments -- it tracks who said what, distinguishes evidence from inference, and maintains the structural integrity of your knowledge over time. The partnership is bidirectional: you bring domain expertise and judgment; Fermi brings structural decomposition, cross-domain pattern detection, and relentless bookkeeping.
 
-Conversations with AI disappear. Insights fade. You have the same realization twice, three times, because nothing persisted from the first time.
-
-This system bridges that gap. Every claim, model, and synthesis is captured with full provenance. You always know:
-- **Who said what** -- origin attribution on every non-trivial idea
-- **What evidence supports it** -- explicit links from interpretations to source material
-- **What's uncertain** -- evidence, inference, and interpolation are never collapsed together
-
-The goal is **durable understanding**, not conversational ease.
+Everything lives in markdown files in a git repository. No proprietary formats, no cloud dependencies, no lock-in. Your knowledge is yours.
 
 ---
 
-## Architecture Overview
+## Design Principles
 
-The system maintains two conceptually distinct but coupled layers:
+### 1. Hierarchical Knowledge Management
 
-- **Raw Layer** (`raw/`): Fidelity-first preservation of original inputs. Append-only. Treated as evidence.
-- **Meta Layer** (`meta/`): Interpretive structure -- maps, models, claims, contradictions, timelines. Traceable to raw material.
+The core architectural idea is a **two-layer hierarchy** that separates evidence from interpretation:
 
-Supporting infrastructure:
-- **Index** (`index/`): Tags, entities, link graphs, glossary -- for retrieval
-- **Views** (`views/`): Navigation aids -- recent ingests, query results, suggested reads
-- **Learning** (`learning/`): Fermi's accumulated operational knowledge
+**Raw Layer** (`raw/`) -- What actually happened. Original inputs preserved with high fidelity. Chat transcripts, notes, papers, code repositories, web content. This layer is append-only. You don't edit your evidence; you add to it.
 
-Everything is markdown. Everything is git-tracked. Everything is traceable.
+**Meta Layer** (`meta/`) -- What you think it means. Claims, models, conceptual maps, contradictions, timelines. This is where interpretation lives -- organized, attributed, and always traceable back to the raw material that supports it.
 
-## Epistemic Framework
+This separation is the system's central anti-corruption mechanism. It prevents two failure modes that plague personal knowledge systems:
 
-The epistemic framework is what makes this system distinctive. It is not optional decoration -- it is structural.
+- **Interpretation drift**: where your summary gradually replaces the source in your memory, and you forget what the original actually said.
+- **Authority substitution**: where a convincing explanation substitutes for actual evidence, and you stop checking.
 
-**Origin Attribution:** Every non-trivial idea in the meta layer carries an explicit origin label:
-- `Origin: YourName` -- your own ideas
-- `Origin: Fermi (model)` -- Fermi's synthesis, tagged with the specific model
-- `Origin: Co-created (YourName + Fermi (model))` -- joint work
-- `Origin: External (Author Name)` -- someone else's work
+By keeping evidence and interpretation in separate layers with explicit links between them, you can always ask: "What raw material supports this claim?" and get a real answer.
 
-**Epistemic Distinctions:** Material is explicitly classified as:
-- **Evidence** -- directly supported by ingested material
-- **Inference** -- conclusions drawn using stated assumptions
-- **Interpolation** -- filling gaps across sparse or incomplete data
+### 2. Epistemic Hierarchy Within the Meta Layer
 
-**Core Principles:**
-- Mechanistic over narrative (how does it work?)
-- Explicit assumptions (what must be true?)
-- Explicit ignorance (what don't we know?)
-- Scale-crossing connections (micro to macro, technical to policy)
+Not all knowledge is created equal. The meta layer enforces an explicit hierarchy of epistemic confidence:
+
+- **Evidence** -- directly supported by ingested material. Something a source actually said or showed.
+- **Inference** -- conclusions drawn from evidence using stated assumptions. The reasoning chain is visible.
+- **Interpolation** -- filling gaps across sparse or incomplete data. Plausible, but the gap is acknowledged.
+
+These distinctions are structural, not decorative. When you query the knowledge base, you see which category each piece of an answer falls into. This prevents the most common failure mode in knowledge work: the gradual collapse of inference into fact.
+
+### 3. Origin Attribution as Infrastructure
+
+Every non-trivial idea in the meta layer carries an explicit origin label:
+
+| Who | Format | Example |
+|-----|--------|---------|
+| You | `Origin: YourName` | Your own insight or analysis |
+| Fermi | `Origin: Fermi (model)` | Fermi's synthesis, tagged with model version |
+| Joint | `Origin: Co-created (You + Fermi)` | Collaborative work |
+| External | `Origin: External (Author)` | Someone else's work, with full provenance |
+
+This is not metadata you add for completeness. It's how the system tracks intellectual provenance over time. When a claim gets refined, synthesized with other claims, or superseded, the origin chain is preserved. You can always trace an idea back to where it came from and who contributed what.
+
+### 4. Retrieval by Structure, Not Just Search
+
+The system is designed so that you rarely need to browse files manually. Instead, knowledge is organized for retrieval through multiple structural pathways:
+
+- **Index Layer** (`index/`) -- Tags, entities, link graphs, and glossaries that provide fast lookup paths into the knowledge base.
+- **Views Layer** (`views/`) -- Computed navigation aids: recent ingests, query results, suggested reads.
+- **Meta Layer structure** -- Claims, models, contradictions, and timelines are organized by type, making it possible to ask "what are all the open contradictions?" or "what models do we have about X?"
+
+When you ask Fermi a question, it retrieves across both raw and meta layers, preferring the meta layer when its answers are well-grounded, falling back to raw material when needed. Answers come with origin labels and epistemic classifications by default.
+
+### 5. Structure That Evolves
+
+The directory layout is a starting point, not a prison. As your knowledge base grows and new representational needs emerge, the structure is allowed to change. The only invariants are:
+
+- Markdown is the canonical format
+- Raw and meta layers remain conceptually separated
+- All restructures are tracked in git and include a rationale
+
+This means the system adapts to your actual knowledge instead of forcing your knowledge into a predetermined shape.
+
+### 6. Mechanistic Over Narrative
+
+The system is biased toward *how things work* rather than *stories about things*. Structural and mechanistic explanations are preferred over narrative comfort. When information is missing, the system says so explicitly and explains what would resolve the uncertainty, rather than generating a plausible-sounding narrative that papers over the gap.
 
 ---
 
-## Quick Start
+## How It Works in Practice
+
+Fermi operates in four modes, detected from your first message or set explicitly:
+
+**Ingest** -- You give Fermi material (notes, papers, URLs, code, conversations). It extracts structure: claims, models, assumptions, open questions, implications. It preserves the original in the raw layer and creates attributed, classified entries in the meta layer. It surfaces non-trivial connections to things already in the knowledge base.
+
+**Query** -- You ask a question. Fermi retrieves relevant material, separates what's established from what's inferred, shows origin labels, and tells you when the evidence is thin.
+
+**Critique** -- You ask Fermi to challenge something. It red-teams arguments, audits model adequacy, identifies confounds, and flags unwarranted certainty. The goal is coherence through careful argumentation, not comfortable agreement.
+
+**Synthesis** -- When enough related material accumulates, Fermi proposes consolidations -- connecting claims, reconciling models, mapping how understanding has evolved. Syntheses are proposed, not imposed. They become part of the knowledge base only when you accept them.
+
+A typical session: you open Claude Code, paste a paper. Fermi extracts its claims and models, notices a tension with something you ingested last month, and flags it. You discuss the contradiction, refine your understanding, and Fermi saves everything -- raw capture, meta entries, updated indices -- with a git commit at the end.
+
+Over weeks and months, what accumulates is not a pile of notes but a structured, traceable, interconnected body of understanding.
+
+---
+
+## Getting Started
 
 ```
-1. Clone this repository (or use it as a template on GitHub)
-2. Open the repository in Claude Code
-3. Run the setup workflow: "Let's run the SETUP workflow"
-4. Validate configuration: bin/validate-configure
-5. Start your first session: "Ingest this note..."
+1. Clone this repository (or use it as a GitHub template)
+2. Open it in Claude Code
+3. Say: "Let's run the SETUP workflow"
+4. Validate: bin/validate-configure
+5. Start: "Ingest this note..." or paste some text
 ```
 
-The SETUP workflow will walk you through configuring your name, timezone, and persona preferences. All configuration lives in `config/system.yml`.
+The SETUP workflow configures your name, timezone, and persona preferences. All configuration lives in `config/system.yml`.
 
-## Operating Modes
+## What's Under the Hood
 
-Fermi detects which mode to use from your first message, or you can request one explicitly.
-
-**Ingest Mode** -- Capture and structure new material
-- "Save this", "Ingest this paper", "Add to KB"
-- Extracts claims, models, assumptions, open questions
-- Surfaces connections to existing knowledge
-
-**Query Mode** -- Retrieve and reason over existing knowledge
-- "What do we know about...", "Search for...", "Retrieve..."
-- Answers from the meta layer when well-grounded
-- Clearly separates facts, inferences, and hypotheses
-
-**Critique Mode** -- Challenge and stress-test
-- "Critique this", "Red-team this argument", "What's wrong with..."
-- Red-teams arguments, audits model adequacy
-- Identifies confounds, missing evidence, unwarranted certainty
-
-**Synthesis Mode** -- Consolidate and integrate
-- "Synthesize these claims", "Consolidate...", "Reconcile..."
-- Proposes syntheses only when confidence in coherence is high
-- Explicit simplifying assumptions, preserved uncertainty
-
-## What a Session Looks Like
-
-A typical session might flow like this:
-
-1. Open Claude Code in your knowledge base repository
-2. Fermi activates automatically, checks for workflows and pending items
-3. You paste a research paper or share a URL: *"Ingest this paper on X"*
-4. Fermi extracts the paper's claims, models, assumptions, and limitations
-5. Fermi surfaces connections: *"This contradicts claim C-042 about Y. The tension is..."*
-6. You discuss the contradiction, refine your understanding
-7. Fermi saves everything: raw capture, meta entries, updated indices
-8. End of session: git commit preserves the full state
-
-Over time, your knowledge base accumulates structured, traceable, interconnected understanding.
-
----
-
-## Customization
-
-See `context/configuration_guide.md` for detailed configuration options.
-
-**Persona:** Fermi ships as the default persona name, but you can rename it to anything via the SETUP workflow or by editing `config/system.yml`. The name changes; the epistemic discipline does not.
-
-**Structure:** The directory structure is allowed to evolve as your knowledge base grows and representational pressure emerges. Only invariants: markdown is canonical truth, and raw/meta separation is preserved. All restructures are git-auditable.
-
-## What's Invariant
-
-These properties hold regardless of configuration or customization:
-
-- **Markdown is canonical truth** -- no proprietary formats, no lock-in
-- **Raw/meta separation preserved** -- evidence and interpretation never collapsed
-- **Origin tracking required** -- every non-trivial idea attributed
-- **Epistemic discipline enforced** -- evidence, inference, and interpolation distinguished
-- **Git-auditable** -- every change tracked, every restructure legible
+| Directory | Purpose |
+|-----------|---------|
+| `raw/` | Preserved inputs: chats, notes, files, curated content, provenance records |
+| `meta/` | Interpretive structure: maps, models, claims, contradictions, timelines |
+| `index/` | Retrieval infrastructure: tags, entities, link graph, glossary |
+| `views/` | Navigation aids: recent ingests, query results, suggested reads |
+| `context/` | System contracts: persona profile, KB spec, configuration guide |
+| `config/` | User configuration |
+| `examples/` | Real examples from a working knowledge base instance |
 
 ## Deeper Reading
 
-The `context/` directory contains the full specification of how the system works and why:
+The `context/` directory contains the full design contracts:
 
-- **[`context/knowledge_partner_profile.md`](context/knowledge_partner_profile.md)** — Defines the Fermi persona: cognitive partnership model, all four operating modes with explicit criteria, saving policy, learning rules, known failure modes and mitigations, communication style, and origin attribution rules
-- **[`context/kb_system_spec.md`](context/kb_system_spec.md)** — System architecture: repository structure, all six ingest pathways, semantic organization principles, idea origin tracking, and the full status taxonomy for meta-layer artifacts
-- **[`context/configuration_guide.md`](context/configuration_guide.md)** — Setup walkthrough: configuration tokens, role profiles for different user types, what's invariant vs what's configurable
+- **[Knowledge Partner Profile](context/knowledge_partner_profile.md)** -- Fermi's cognitive partnership model, operating modes, learning rules, known failure modes, communication norms
+- **[KB System Spec](context/kb_system_spec.md)** -- Repository architecture, ingest pathways, semantic organization, status taxonomy, origin tracking rules
+- **[Configuration Guide](context/configuration_guide.md)** -- Setup walkthrough, role profiles, what's configurable vs invariant
 
-These documents are marked **LOCKED** — they define the epistemic contracts that make the system work. Read them to understand the design decisions; modify them only if you're redesigning the system itself.
-
-## Examples
-
-The `examples/` directory contains real examples from a working Fermi knowledge base instance, spanning infectious disease immunology and AI cognition. They demonstrate format and epistemic discipline in practice:
-- Claims with single and co-created origin labels
-- Mechanistic models with testable predictions and scope boundaries
-- A resolved contradiction and a coexisting (unresolved) one
-- A synthesized conceptual map and a theory evolution timeline
+The `examples/` directory shows what real knowledge base entries look like: claims with origin labels, mechanistic models with testable predictions, resolved and unresolved contradictions, conceptual maps, and theory evolution timelines.
 
 ---
 
 ## Requirements
 
-- [Claude Code](https://claude.ai/code) (claude.ai/code)
+- [Claude Code](https://claude.ai/code)
 
 ## License
 
@@ -171,4 +152,4 @@ MIT -- see [LICENSE](LICENSE).
 
 ## Acknowledgments
 
-This template was extracted from a working Fermi knowledge base instance. The epistemic framework and persona design emerged through extended collaboration between a human knowledge worker and Claude. The system's core insight -- that durable understanding requires structural epistemic discipline, not just good note-taking -- was itself a product of that collaboration.
+This template was extracted from a working Fermi knowledge base instance. The epistemic framework and persona design emerged through extended human-AI collaboration. The system's core insight -- that durable understanding requires structural epistemic discipline, not just good note-taking -- was itself a product of that collaboration.
