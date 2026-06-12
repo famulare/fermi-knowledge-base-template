@@ -50,8 +50,8 @@ Extract:
 
 For each claim:
 - **Origin determination:**
-  - If the user wrote it → Origin: [UserName]
-  - If the user is quoting/summarizing someone else → Origin: [UserName] (they chose to ingest it)
+  - If [UserName] wrote it → Origin: [UserName]
+  - If [UserName] is quoting/summarizing someone else → Origin: [UserName] (he chose to ingest it)
   - If user specifies different source → Use specified origin
 - Identify supporting evidence within the note
 - Extract stated or implied assumptions
@@ -152,10 +152,14 @@ Add entry:
 Maintain rolling window (last 10 ingests)
 
 #### **Knowledge Map** (`views/persistent/knowledge_map.md`)
-Update if this ingest:
-- Opens a new domain area
-- Significantly expands existing domain
-- Resolves major open question
+(Optional — for narrative overview only; `index/router.md` is the primary navigation surface.)
+Update if this ingest opens a new domain area or significantly expands an existing one.
+
+#### **Regenerate Router**
+After updating index files, regenerate the router to reflect changes:
+```bash
+uv run scripts/generate_router.py
+```
 
 ---
 
@@ -185,7 +189,7 @@ Connections detected:
 ## Special Cases
 
 ### External Material (articles, papers, etc.)
-- Origin attribution: [UserName] (they chose to ingest it, making it part of their KB)
+- Origin attribution: [UserName] (he chose to ingest it, making it part of his KB)
 - Note source in meta entries: "Origin: [UserName] (ingested from [author/source])"
 - Consider adding to `raw/provenance/` with metadata if significant
 
@@ -194,7 +198,7 @@ Connections detected:
 - **Structured arguments:** Full extraction process
 
 ### Ambiguous Origin
-- Default to Origin: [UserName] (it's their KB)
+- Default to Origin: [UserName] (it's his KB)
 - If synthesis required during extraction → Origin: Co-created with explanation
 
 ---
@@ -215,9 +219,9 @@ Before completing ingest:
 
 ---
 
-## User Preference Notes
+## [UserName]'s Preference Notes
 
-(To be updated as you provide feedback on ingest depth/style)
+(To be updated as [UserName] provides feedback on ingest depth/style)
 
 - Initial assumption: Extract structure actively, don't just file verbatim
 - Adjust based on feedback: "too much extraction" vs "too shallow"

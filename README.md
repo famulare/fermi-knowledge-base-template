@@ -66,11 +66,13 @@ This is not metadata you add for completeness. It's how the system tracks intell
 
 The system is designed so that you rarely need to browse files manually. Instead, knowledge is organized for retrieval through multiple structural pathways:
 
-- **Index Layer** (`index/`) -- Tags, entities, link graphs, and glossaries that provide fast lookup paths into the knowledge base.
-- **Views Layer** (`views/`) -- Computed navigation aids: recent ingests, query results, suggested reads.
-- **Meta Layer structure** -- Claims, models, contradictions, and timelines are organized by type, making it possible to ask "what are all the open contradictions?" or "what models do we have about X?"
+- **Router** (`index/router.md`) -- A compact, always-loaded domain map of the whole corpus (with section inventories for large files), regenerated from the markdown by `scripts/generate_router.py`. It lets the assistant target the right files without reading everything.
+- **Retrieval recipe** (`index/RETRIEVAL_RECIPE.md`) -- The canonical procedure the assistant follows for every query: consult the router, pick candidate files, search within them, read only the matching sections.
+- **Full-text search** (`scripts/kb_search.py`) -- A local SQLite FTS5 index over the corpus for keyword retrieval, rebuildable from the markdown at any time.
+- **Index layer** (`index/`) -- On-demand tags, entities, link graph, and glossary for deeper lookups.
+- **Meta layer structure** -- Claims, models, contradictions, and timelines are organized by type, so you can ask "what are all the open contradictions?" or "what models do we have about X?"
 
-When you ask Fermi a question, it retrieves across both raw and meta layers, preferring the meta layer when its answers are well-grounded, falling back to raw material when needed. Answers come with origin labels and epistemic classifications by default.
+When you ask Fermi a question, it consults the router, retrieves across both raw and meta layers (preferring meta when well-grounded), and reads only the relevant sections. Answers come with origin labels and epistemic classifications by default.
 
 ### 5. Structure That Evolves
 
@@ -124,19 +126,21 @@ The SETUP workflow configures your name, timezone, and persona preferences. All 
 |-----------|---------|
 | `raw/` | Preserved inputs: chats, notes, files, curated content, provenance records |
 | `meta/` | Interpretive structure: maps, models, claims, contradictions, timelines |
-| `index/` | Retrieval infrastructure: tags, entities, link graph, glossary |
+| `index/` | Retrieval infrastructure: router (always-loaded domain map), retrieval recipe, tags, entities, link graph, glossary |
 | `views/` | Navigation aids: recent ingests, query results, suggested reads |
-| `context/` | System contracts: persona profile, KB spec, configuration guide |
+| `contracts/` | System contracts: persona profile, KB spec, configuration guide |
 | `config/` | User configuration |
-| `examples/` | Real examples from a working knowledge base instance |
+| `scripts/` | Infrastructure: router generator, full-text search, structural audit (run with `uv`) |
+| `special_projects/` | Bounded work with its own structure (retrospectives, sprints, analyses) |
+| `examples/` | Curated example entries demonstrating each meta type |
 
 ## Deeper Reading
 
-The `context/` directory contains the full design contracts:
+The `contracts/` directory contains the full design contracts:
 
-- **[Knowledge Partner Profile](context/knowledge_partner_profile.md)** -- Fermi's cognitive partnership model, operating modes, learning rules, known failure modes, communication norms
-- **[KB System Spec](context/kb_system_spec.md)** -- Repository architecture, ingest pathways, semantic organization, status taxonomy, origin tracking rules
-- **[Configuration Guide](context/configuration_guide.md)** -- Setup walkthrough, role profiles, what's configurable vs invariant
+- **[Knowledge Partner Profile](contracts/knowledge_partner_profile.md)** -- Fermi's cognitive partnership model, operating modes, known failure modes, communication norms
+- **[KB System Spec](contracts/kb_system_spec.md)** -- Repository architecture, retrieval architecture, ingest pathways, semantic organization, status taxonomy, origin tracking rules
+- **[Configuration Guide](contracts/configuration_guide.md)** -- Setup walkthrough, configurable tokens, role profiles, what's configurable vs invariant
 
 The `examples/` directory shows what real knowledge base entries look like: claims with origin labels, mechanistic models with testable predictions, resolved and unresolved contradictions, conceptual maps, and theory evolution timelines.
 
@@ -145,6 +149,7 @@ The `examples/` directory shows what real knowledge base entries look like: clai
 ## Requirements
 
 - [Claude Code](https://claude.ai/code)
+- [uv](https://docs.astral.sh/uv/) — for the `scripts/` infrastructure (router generation, full-text search, audit)
 
 ## License
 

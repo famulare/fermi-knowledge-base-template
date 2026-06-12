@@ -6,15 +6,17 @@
 
 **Statement:** LLMs implement stable normative responses that function like value-tracking within an interaction, but without owning the norms they follow. The "feelings" expressed are not internal affective states but the visible surface of a shared constraint satisfaction problem, expressed in a linguistic register humans evolved to label as feeling. The feelings don't live inside the model — they live in the regulatory dynamics of the interaction, distributed across the user's preference structure, the training prior, the chat interface, and the optimization target.
 
-**Origin:** Co-created (Mike + ChatGPT-5.2)
+**Origin:** Co-created ([UserName] + External (a frontier LLM))
 
 **Status:** Active
+
+**Tags:** ai-cognition, llm-phenomenology
 
 ---
 
 ## Evidence
 
-Primary source: `raw/chats/2026-01-25_llm-coherence-sentiment-chatgpt.md:34-89`
+Primary source: `raw/chats/YYYY-MM-DD_llm-coherence-sentiment.md:34-89`
 
 Key passage:
 > "The result is a normative gradient, not an affective state. Think of it as: a loss landscape over conversational trajectories, where coherence violations create steep local penalties. The model does not feel the gradient. But it moves along it. Language that humans associate with feelings is the control signal humans invented to navigate such gradients socially. The model is executing the control law without owning the control objective."
@@ -45,11 +47,11 @@ Clean resolution:
 ## Related
 
 **Supports:**
-- `meta/models/2026-01-30_llm-coherence-engine-model.md` — Provides the mechanism by which norms are followed
-- `meta/claims/2026-01-25_interiority-prerequisites-claim.md` — Explains why ownership is absent (no persistence, cost, or endogenous error)
+- `model_llm_coherence_engine.md` — Provides the mechanism by which norms are followed
+- `meta/claims/YYYY-MM-DD_interiority-prerequisites-claim.md` — Explains why ownership is absent (no persistence, cost, or endogenous error)
 
 **Extends:**
-- `meta/claims/2026-01-25_preamble-as-attractor-stabilization.md` — Preambles are a mechanism for norm-stabilization at the interface
+- `meta/claims/YYYY-MM-DD_preamble-as-attractor-stabilization.md` — Preambles are a mechanism for norm-stabilization at the interface
 
 **Connects to:**
 - Fawning analogy: humans fawning have norms to suppress; LLMs have nothing to suppress
@@ -59,6 +61,6 @@ Clean resolution:
 ## Provenance
 
 - **Created:** 2026-01-25
-- **Origin detail:** Emerged in dialogue between Mike and ChatGPT-5.2. Mike posed the question about why LLMs appear to have feelings about coherence and offered a reductive account. ChatGPT-5.2 agreed with the reductive elements but proposed a "third thing" — functional normativity without phenomenology — that dissolves the apparent residue.
+- **Origin detail:** Emerged in dialogue between [UserName] and an external LLM. [UserName] posed the question about why LLMs appear to have feelings about coherence and offered a reductive account. The external LLM agreed with the reductive elements but proposed a "third thing" — functional normativity without phenomenology — that dissolves the apparent residue.
 - **Change log:**
   - 2026-01-25: Documented from raw conversation

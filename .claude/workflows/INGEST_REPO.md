@@ -2,7 +2,7 @@
 
 **Trigger:** User provides GitHub repository URL or says "ingest this repository"
 
-**Status:** Fully Implemented
+**Status:** Phase 6 - Fully Implemented
 
 ---
 
@@ -22,12 +22,12 @@ Capture **intellectual content** of codebases:
 
 | Content | This Workflow (INGEST_REPO) | INGEST_CURATED |
 |---------|----------------------------|----------------|
-| Your repositories | Yes | No |
+| [UserName]'s repositories | Yes | No |
 | External repos for Fermi synthesis | Yes | No |
 | External repos to preserve with clear attribution | No | Yes |
-| External repos you find architecturally interesting | Consider INGEST_CURATED | Yes |
+| External repos [UserName] finds architecturally interesting | Consider INGEST_CURATED | Yes |
 
-**Rule of thumb:** If you want an external repository clearly labeled as someone else's architecture (not your own, not Fermi's synthesis), use INGEST_CURATED.
+**Rule of thumb:** If [UserName] wants an external repository clearly labeled as someone else's architecture (not his own, not Fermi's synthesis), use INGEST_CURATED.
 
 ---
 
@@ -500,24 +500,24 @@ Example:
 **Decision tree:**
 
 ```
-Is this repository authored by you?
+Is this repository authored by [UserName]?
 ├─ Yes: Ask for attribution preference
 │   └─ Present options:
-│       1. Origin: [UserName] (your design decisions)
-│       2. Origin: Co-created ([UserName] + Fermi (‹model›)) (interpretation of your work)
+│       1. Origin: [UserName] (his design decisions)
+│       2. Origin: Co-created ([UserName] + Fermi (‹model›)) (interpretation of his work)
 │       3. Origin: Fermi (treat as external for objectivity)
 │       Recommendation: Option 1 if clear authorship
 │
 └─ No: CONSIDER USING INGEST_CURATED WORKFLOW INSTEAD
     │
-    ├─ If you want to preserve as external content with clear attribution:
+    ├─ If [UserName] wants to preserve as external content with clear attribution:
     │   └─ Use INGEST_CURATED workflow
     │       - Origin: External (Repository Authors)
     │       - Stored in raw/curated/repos/
     │       - Requires "why" reason
     │       - Clear epistemic boundary maintained
     │
-    └─ If you want Fermi's interpretive synthesis:
+    └─ If [UserName] wants Fermi's interpretive synthesis:
         └─ Origin: Fermi (‹model›)
             └─ In Origin detail section:
                 - Note original repository authors
@@ -529,14 +529,14 @@ Is this repository authored by you?
 
 | Scenario | Workflow | Rationale |
 |----------|----------|-----------|
-| External repo you want to reference | INGEST_CURATED | Keep clear it's external architecture |
-| External repo you want Fermi to analyze | INGEST_REPO | Fermi's interpretation is the value |
+| External repo [UserName] wants to reference | INGEST_CURATED | Keep clear it's external architecture |
+| External repo [UserName] wants Fermi to analyze | INGEST_REPO | Fermi's interpretation is the value |
 | External repo architecture to learn from | INGEST_CURATED | Preserve external attribution |
-| External repo for pattern comparison | Either | Depends on whether you want clear attribution or synthesis |
+| External repo for pattern comparison | Either | Depends on whether [UserName] wants clear attribution or synthesis |
 
-**For your repository:**
+**For [UserName]'s repository:**
 ```
-Attribution: This repository is authored by you.
+Attribution: This repository is authored by you ([UserName]).
 
 How should I attribute the extracted design decisions and architecture?
 
@@ -590,7 +590,7 @@ Raw capture: raw/repos/YYYY-MM-DD_repo-slug.md
 Original authors: [Names from README/LICENSE]
 Repository created: YYYY-MM-DD
 [UserName] ingested: YYYY-MM-DD
-Interpretation: Fermi (‹model›)
+Interpretation: Claude (‹model›)
 
 What's interpretation: Architectural patterns, design tradeoffs, and assumptions
 inferred from documentation and code structure. Original authors stated goals
@@ -600,17 +600,17 @@ Note: For external repos with clear attribution preserved, consider using
 INGEST_CURATED workflow with Origin: External (Authors).
 ```
 
-**For your repositories:**
+**For [UserName]'s repositories:**
 ```markdown
 **Origin:** [UserName]
 
 **Origin detail:**
 This repository was created by [UserName].
 
-Repository: https://github.com/[user]/repo (commit: sha)
+Repository: https://github.com/[username]/repo (commit: sha)
 Raw capture: raw/repos/YYYY-MM-DD_repo-slug.md
 Design decisions: [UserName]
-Extraction and organization: Fermi (‹model›), YYYY-MM-DD
+Extraction and organization: Claude (‹model›), YYYY-MM-DD
 
 [UserName] designed the architecture; I extracted and structured the description.
 ```
@@ -631,7 +631,7 @@ Extraction and organization: Fermi (‹model›), YYYY-MM-DD
 
 **Use template:** `meta/claims/_TEMPLATE.md`
 
-**Origin:** Same as model (Fermi for external, [UserName] for your repos)
+**Origin:** Same as model (Fermi for external, [UserName] for his repos)
 
 ---
 
@@ -847,7 +847,7 @@ Follow **TIMELINES.md** workflow:
 **Languages:** [Primary], [Others]
 **Examination scope:** [Full docs + samples | Docs + structure | Docs only]
 
-**Original authors:** [Names] (for external repos) | [UserName] (for your repos)
+**Original authors:** [Names] (for external repos) | [UserName] (for his repos)
 
 **Meta entries:**
   - meta/models/YYYY-MM-DD_repo-architecture.md (Origin: [Fermi|[UserName]])
@@ -861,12 +861,14 @@ Follow **TIMELINES.md** workflow:
 ```
 
 **Knowledge Map** (`views/persistent/knowledge_map.md`):
+(Optional — for narrative overview only; `index/router.md` is the primary navigation surface.)
+Update if repository introduces a new domain area or major architectural pattern.
 
-Update if repository:
-- Introduces new architectural pattern
-- Opens new domain area
-- Provides significant example of existing pattern
-- Represents major contribution to KB
+**Regenerate Router:**
+After updating index files, regenerate the router to reflect changes:
+```bash
+uv run scripts/generate_router.py
+```
 
 ---
 
@@ -1158,16 +1160,16 @@ Which approach?
 
 ---
 
-### Case 4: Your Repository
+### Case 4: [UserName]'s Repository
 
 **Detection:**
 - User says "my repository" or "my repo"
-- Repository URL contains the user's GitHub username (if known)
+- Repository URL contains [UserName]'s GitHub username (if known)
 - User confirms when asked
 
 **Action: Ask attribution**
 ```
-Attribution: This repository appears to be authored by you.
+Attribution: This repository appears to be authored by you ([UserName]).
 
 How should I attribute the design decisions and architectural insights?
 
@@ -1196,10 +1198,10 @@ Which attribution do you prefer?
 **Origin detail:**
 This repository was created by [UserName].
 
-Repository: https://github.com/[user]/repo (commit: sha)
+Repository: https://github.com/[username]/repo (commit: sha)
 Raw capture: raw/repos/YYYY-MM-DD_repo-slug.md
 Design decisions: [UserName]
-Extraction and organization: Fermi (‹model›), YYYY-MM-DD
+Extraction and organization: Claude (‹model›), YYYY-MM-DD
 
 [UserName] designed this architecture and made these tradeoff decisions.
 I extracted and structured the description from documentation and code.
@@ -1210,11 +1212,11 @@ I extracted and structured the description from documentation and code.
 **Origin:** Co-created
 
 **Origin detail:**
-Repository created by [UserName], interpreted and structured by Fermi.
+Repository created by [UserName], interpreted and structured by Claude.
 
-Repository: https://github.com/[user]/repo (commit: sha)
+Repository: https://github.com/[username]/repo (commit: sha)
 [UserName]'s work: Architecture design, implementation, documentation
-Fermi's work: Pattern extraction, tradeoff analysis, structural organization
+Claude's work: Pattern extraction, tradeoff analysis, structural organization
 Collaboration date: YYYY-MM-DD
 ```
 
@@ -1225,9 +1227,9 @@ Collaboration date: YYYY-MM-DD
 **Origin detail:**
 Interpretive analysis of [UserName]'s repository, treated as external for objectivity.
 
-Repository: https://github.com/[user]/repo (commit: sha)
+Repository: https://github.com/[username]/repo (commit: sha)
 Original author: [UserName]
-Analysis: Fermi (‹model›), YYYY-MM-DD
+Analysis: Claude (‹model›), YYYY-MM-DD
 Treatment: Analyzed as external repository to maintain critical distance
 ```
 
@@ -1522,15 +1524,15 @@ Citation: `raw/repos/2026-01-22_facebook_react.md`
 
 ---
 
-### Example 3: Your Repository (Origin Attribution)
+### Example 3: [UserName]'s Repository (Origin Attribution)
 
-**User:** "Ingest my modeling repository"
+**User:** "Ingest my epidemiology modeling repository"
 
 **Process:**
 ```
-Analyzing repository: [user]/model-repo...
+Analyzing repository: [username]/epi-model...
 
-Attribution: This repository is authored by you.
+Attribution: This repository is authored by you ([UserName]).
 
 How should I attribute the design decisions?
 1. Origin: [UserName] (Recommended)
@@ -1565,37 +1567,37 @@ Sampling code:
 Files examined: 12 / 150 (8%)
 
 Storing...
-✓ raw/repos/2026-01-22_[user]_model-repo.md
+✓ raw/repos/2026-01-22_[username]_epi-model.md
 
 Extracting architecture...
-✓ meta/models/2026-01-22_model-repo-compartmental-structure.md
+✓ meta/models/2026-01-22_epi-model-compartmental-structure.md
 
 Origin: [UserName] (your design decisions)
 
-Key insight: Compartmental model with hierarchical Bayesian calibration.
-Design tradeoff: Complexity justified by fitting multiple data streams.
+Key insight: Age-structured compartmental model with hierarchical Bayesian calibration.
+Design tradeoff: Complexity of age structure justified by fitting multiple data streams.
 
 Index updates:
-✓ Tags: domain:modeling, pattern:compartmental-model, pattern:hierarchical-bayes
-✓ Entities: [user]/model-repo
+✓ Tags: domain:epidemiology, pattern:compartmental-model, pattern:hierarchical-bayes
+✓ Entities: [username]/epi-model
 ✓ Glossary: compartmental-model, hierarchical-bayesian-calibration
 
 **Repository ingested successfully**
 
-Repository: [user]/model-repo (Python application, 150 files)
+Repository: [username]/epi-model (Python application, 150 files)
 Examined: Documentation, structure, entry point + 1 core module (8%)
 
-Architectural insight: Compartmental model with hierarchical
+Architectural insight: Age-structured compartmental epidemiology model with hierarchical
 Bayesian calibration. Design explicitly balances model complexity against ability to fit
 multiple heterogeneous data streams.
 
 Meta created:
-- meta/models/2026-01-22_model-repo-compartmental-structure.md (Origin: [UserName])
-  Compartmental model with hierarchical calibration
+- meta/models/2026-01-22_epi-model-compartmental-structure.md (Origin: [UserName])
+  Age-structured compartmental model with hierarchical calibration
 
 Origin: [UserName] designed this architecture. I extracted and structured the description.
 
-Citation: `raw/repos/2026-01-22_[user]_model-repo.md`
+Citation: `raw/repos/2026-01-22_[username]_epi-model.md`
 ```
 
 ---
@@ -1745,8 +1747,8 @@ Before completing repository ingest:
 - [ ] Transparency: No silent omissions
 
 **Origin Attribution:**
-- [ ] Origin correct: Fermi (external) or [UserName] (your repo)
-- [ ] If your repo: Asked for attribution preference
+- [ ] Origin correct: Fermi (external) or [UserName] (his repo)
+- [ ] If [UserName]'s repo: Asked for attribution preference
 - [ ] Origin detail complete: Original authors, dates, interpretation noted
 - [ ] Clear distinction: Design decisions vs interpretation
 
@@ -1801,7 +1803,7 @@ Before completing repository ingest:
 **Special Cases:**
 - [ ] Large repos: Asked for strategy, transparency about scope
 - [ ] Monorepos: Asked for strategy, clear about scope
-- [ ] Your repos: Asked for attribution
+- [ ] [UserName]'s repos: Asked for attribution
 - [ ] Forks: Noted origin, asked for treatment
 - [ ] Archived repos: Noted status prominently
 
@@ -1842,16 +1844,18 @@ If repository illuminates pattern across multiple existing models:
 
 ## Status
 
-**Status:** Fully Implemented
+**Status:** Fully Implemented (Phase 6)
+**Created:** 2026-01-22
 **Dependencies:**
 - `gh` CLI (GitHub API access)
 - Templates: `meta/models/_TEMPLATE.md`
 - Workflows: CONNECTIONS.md, CONTRADICTIONS.md, TIMELINES.md
 - Indices: tags.md, entities.md, glossary.md, link_graph.md
-- Views: recent_ingests.md, knowledge_map.md
+- Views: recent_ingests.md, knowledge_map.md (optional narrative)
+- Router: `uv run scripts/generate_router.py` (regenerate after ingest)
 
 ---
 
 ## Summary
 
-GitHub repository ingest captures intellectual content of codebases (goals, architecture, assumptions, tradeoffs) through selective examination with explicit transparency. Follows universal ingest pattern: preservation → extraction → linking → indexing → connection → views → response. Respects epistemic discipline: origin attribution, evidence vs inference, explicit scope, no silent omissions. Handles special cases: large repos, re-ingests, monorepos, your repos, forks. Integrates with connections, contradictions, timelines workflows.
+GitHub repository ingest captures intellectual content of codebases (goals, architecture, assumptions, tradeoffs) through selective examination with explicit transparency. Follows universal ingest pattern: preservation → extraction → linking → indexing → connection → views → response. Respects epistemic discipline: origin attribution, evidence vs inference, explicit scope, no silent omissions. Handles special cases: large repos, re-ingests, monorepos, [UserName]'s repos, forks. Integrates with connections, contradictions, timelines workflows.

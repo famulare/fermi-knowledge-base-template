@@ -34,18 +34,18 @@ else
 fi
 
 # Check optional: CONFIGURE tokens in knowledge_partner_profile.md
-if grep -q 'CONFIGURE:user_name' "$REPO_ROOT/context/knowledge_partner_profile.md" 2>/dev/null; then
-    echo -e "${YELLOW}WARN${NC} context/knowledge_partner_profile.md: user_name token not yet populated"
+if grep -q 'CONFIGURE:user_name' "$REPO_ROOT/contracts/knowledge_partner_profile.md" 2>/dev/null; then
+    echo -e "${YELLOW}WARN${NC} contracts/knowledge_partner_profile.md: user_name token not yet populated"
     echo "  → Run the SETUP workflow or manually replace <!-- CONFIGURE:user_name -->"
     WARNINGS=$((WARNINGS + 1))
 else
-    echo -e "${GREEN}PASS${NC} context/knowledge_partner_profile.md: user references configured"
+    echo -e "${GREEN}PASS${NC} contracts/knowledge_partner_profile.md: user references configured"
 fi
 
-# Check for any remaining [CONFIGURE] tokens across key files
+# Check for any remaining [CONFIGURE] / [UserName] tokens across key files
 echo ""
-echo "Scanning for remaining CONFIGURE tokens..."
-REMAINING=$(grep -rn '\[CONFIGURE\]' "$REPO_ROOT/config/" "$REPO_ROOT/context/" 2>/dev/null | grep -v "configuration_guide" | grep -v "validate-configure" || true)
+echo "Scanning for remaining CONFIGURE / [UserName] tokens..."
+REMAINING=$(grep -rnE '\[CONFIGURE\]|\[UserName\]' "$REPO_ROOT/config/" "$REPO_ROOT/contracts/" 2>/dev/null | grep -v "configuration_guide" | grep -v "validate-configure" || true)
 
 if [ -n "$REMAINING" ]; then
     echo -e "${YELLOW}WARN${NC} Remaining CONFIGURE references found:"

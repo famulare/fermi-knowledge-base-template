@@ -1,6 +1,6 @@
 # Workflow: Chat Save Point
 
-**Trigger:** User says "save this conversation" or "ingest this chat"
+**Trigger:** [UserName] says "save this conversation" or "ingest this chat"
 
 ---
 
@@ -38,7 +38,7 @@
 ## Exchange
 
 **[UserName]:**
-[User's substantive input]
+[[UserName]'s substantive input]
 
 **Fermi:**
 [Fermi's substantive response]
@@ -69,7 +69,7 @@ Identify and extract:
 - Position statements
 
 For each claim:
-- Determine origin (User's statements → Origin: [UserName]; Fermi proposals accepted by user → Origin: Co-created)
+- Determine origin ([UserName]'s statements → Origin: [UserName]; Fermi proposals accepted by [UserName] → Origin: Co-created)
 - Identify evidence within the chat
 - Note assumptions
 - Flag uncertainties
@@ -159,6 +159,12 @@ Add entry in rolling window format:
 ```
 
 Keep last 10 ingests only (remove oldest)
+
+#### **Regenerate Router**
+After updating index files, regenerate the router to reflect changes:
+```bash
+uv run scripts/generate_router.py
+```
 
 ---
 

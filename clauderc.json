@@ -1,0 +1,8 @@
+{
+  "skills": {
+    "goodbye-kb": {
+      "description": "KB session checkpoint — reviews changes, regenerates router/index, runs the audit, commits",
+      "command": ".claude/skills/goodbye-kb/goodbye-kb.sh"
+    }
+  }
+}

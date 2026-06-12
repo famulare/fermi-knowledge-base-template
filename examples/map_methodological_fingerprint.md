@@ -2,21 +2,25 @@
 > It demonstrates the format and epistemic discipline of the system.
 > Your KB entries will reflect your own domain and interests.
 
-# Map: Mike's Methodological Fingerprint
+# Map: [UserName]'s Methodological Fingerprint
 
-**Origin:** Fermi (Opus 4.5)
+**Origin:** Fermi (‹model›)
 
 **Status:** Active
 
 **Last updated:** 2026-01-23
 
+**Tags:** methodology, scientific-integrity
+
 ---
 
 ## Purpose
 
-This map synthesizes Mike's distinctive approach to scientific work as extracted from his methodological blog posts. It identifies recurring themes, core values, and characteristic ways of thinking that constitute his "methodological fingerprint"—patterns that inform how he approaches problems across domains.
+This map synthesizes [UserName]'s distinctive approach to scientific work as extracted from their methodological blog posts. It identifies recurring themes, core values, and characteristic ways of thinking that constitute their "methodological fingerprint"—patterns that inform how they approach problems across domains.
 
 This map was completed following the full 7-phase blog repository ingest, integrating content from methodological posts, NAb theory series, public health retrospectives, COVID gray literature, and personal/reflective posts.
+
+[Fermi editorial: the source paths below are generic placeholders illustrating the structure of a methodological-fingerprint map; substitute your own raw sources.]
 
 ---
 
@@ -24,27 +28,27 @@ This map was completed following the full 7-phase blog repository ingest, integr
 
 ### Situational Awareness Priority
 - **Definition:** Understanding what has happened and is happening (feedback) is more valuable and more frequently needed than prediction
-- **Source:** `raw/web/posts/2022-05-04_best-tools-fit-for-purpose.md`
+- **Source:** `raw/web/posts/YYYY-MM-DD_best-tools-fit-for-purpose.md`
 - **Related concepts:** Closed-loop control, human agency preservation
 
 ### Hidden Correlations Problem
 - **Definition:** Unmeasured, correlated risk factors cause interventions to stall as remaining burden clusters in high-dimensional tails
-- **Source:** `raw/web/posts/2022-05-13_five-percent-problem.md`
+- **Source:** `raw/web/posts/YYYY-MM-DD_five-percent-problem.md`
 - **Related concepts:** Structural inequity, proactive anomaly investigation
 
 ### Night Science Integration
 - **Definition:** Creative speculation and rigorous work are inseparable; treating them as distinct harms science quality
-- **Source:** `raw/web/posts/2024-03-07_night-science-false-dichotomy.md`
+- **Source:** `raw/web/posts/YYYY-MM-DD_night-science-false-dichotomy.md`
 - **Related concepts:** Cross-disciplinary thinking, pattern recognition
 
 ### Scientific Integrity (Kepler Standard)
 - **Definition:** Inability to ignore small discrepancies between model and data, even when motivated to do so
-- **Source:** `raw/web/posts/2024-12-05_kepler-scientific-integrity.md`
+- **Source:** `raw/web/posts/YYYY-MM-DD_kepler-scientific-integrity.md`
 - **Related concepts:** Data honesty, aesthetic resistance
 
 ### "Nothing Is One Thing"
 - **Definition:** Details matter, but which details matter depends on structures that hold them together; everything is connected
-- **Source:** `raw/web/posts/2022-05-02_about-this-blog.md`
+- **Source:** `raw/web/posts/YYYY-MM-DD_about-this-blog.md`
 - **Related concepts:** Surprising amount of detail, multi-scale thinking
 
 ---
@@ -79,7 +83,7 @@ Scientific Integrity --enables--> Discovery
 
 ### 1. Multi-Scale Thinking
 Connect within-host biology to population dynamics; micro-mechanisms explain macro-phenomena.
-- Evidence: Polio paper, NAb series (cellular R=1 → population immunity ceiling), COVID dose-response, icddr,b story
+- Evidence: Polio paper, NAb series (cellular R=1 → population immunity ceiling), COVID dose-response, field-research-institute story
 
 ### 2. Continuous Over Binary
 Reject binary categories (susceptible/immune, Night/Day science) in favor of continuous spectra.
@@ -87,7 +91,7 @@ Reject binary categories (susceptible/immune, Night/Day science) in favor of con
 
 ### 3. Understanding Over Prediction
 Prefer models that help people understand over models that tell them what will happen.
-- Evidence: Situational awareness emphasis, forecasting critique, IDM retrospective ("9/10 need situational awareness"), WA-DOH partnership approach
+- Evidence: Situational awareness emphasis, forecasting critique, institutional retrospective ("9/10 need situational awareness"), public-health-agency partnership approach
 
 ### 4. Proactive Anomaly Investigation
 Don't wait for problems to become obvious; investigate underperformance early.
@@ -113,29 +117,29 @@ Details matter, but which ones depends on context; investigate structures.
 
 ## Active Models in This Domain
 
-- `meta/models/2026-01-23_situational-awareness-prediction-intervention-taxonomy.md` - Three-purpose framework for epi models
-- `meta/models/2026-01-23_nab-immune-response-cellular-dynamics.md` - NAb immunity via cellular R=1 (Exploratory)
-- `meta/models/2026-01-23_rdt-brightness-viral-load-estimation.md` - Personal viral load tracking (Exploratory)
+- `meta/models/YYYY-MM-DD_situational-awareness-prediction-intervention-taxonomy.md` - Three-purpose framework for epi models
+- `meta/models/YYYY-MM-DD_nab-immune-response-cellular-dynamics.md` - NAb immunity via cellular R=1 (Exploratory)
+- `meta/models/YYYY-MM-DD_rdt-brightness-viral-load-estimation.md` - Personal viral load tracking (Exploratory)
 
 ---
 
 ## Active Claims in This Domain
 
-- `meta/claims/2026-01-23_hidden-correlations-5-percent-problem.md`
-- `meta/claims/2026-01-23_night-science-day-science-false-dichotomy.md`
-- `meta/claims/2026-01-23_scientific-integrity-kepler-standard.md`
-- `meta/claims/2026-01-23_sub-diffusive-neutralization-in-vivo.md`
-- `meta/claims/2026-01-23_nab-titer-maximum-2-to-14.md` (Exploratory)
-- `meta/claims/2026-01-23_vaccine-sanitation-interaction-exposure-dependent.md`
+- `meta/claims/YYYY-MM-DD_hidden-correlations-5-percent-problem.md`
+- `meta/claims/YYYY-MM-DD_night-science-day-science-false-dichotomy.md`
+- `meta/claims/YYYY-MM-DD_scientific-integrity-kepler-standard.md`
+- `meta/claims/YYYY-MM-DD_sub-diffusive-neutralization-in-vivo.md`
+- `meta/claims/YYYY-MM-DD_nab-titer-maximum-2-to-14.md` (Exploratory)
+- `meta/claims/YYYY-MM-DD_vaccine-sanitation-interaction-exposure-dependent.md`
 
 ---
 
 ## Related Maps
 
-- `meta/maps/2026-01-23_idm-covid-response-context.md` - Institutional application of methodology
-- `meta/maps/2026-01-23_mike-values-and-commitments.md` - Personal values informing professional approach
-- `meta/maps/2026-01-23_covid-gray-literature-index.md` - Operational outputs of methodology
-- `meta/timelines/nab-immunity-theory-evolution.md` - Evolution of one research line
+- `meta/maps/YYYY-MM-DD_institutional-response-context.md` - Institutional application of methodology
+- `meta/maps/YYYY-MM-DD_values-and-commitments.md` - Personal values informing professional approach
+- `meta/maps/YYYY-MM-DD_gray-literature-index.md` - Operational outputs of methodology
+- `timeline_nab_immunity_evolution.md` - Evolution of one research line
 
 ---
 
@@ -150,12 +154,12 @@ Details matter, but which ones depends on context; investigate structures.
 
 3. **How did these commitments develop over time?**
    - Blog timeline shows: Polio paper (2018) → methodology articulation (2022) → Night Science extension (2024)
-   - See `meta/timelines/nab-immunity-theory-evolution.md`
+   - See `timeline_nab_immunity_evolution.md`
 
 4. **How do personal and professional intertwine?**
    - Now traced via values map: Scientific integrity mirrors relational integrity
    - Pandemic work carried personal cost; family provides meaning
-   - See `meta/maps/2026-01-23_mike-values-and-commitments.md`
+   - See `meta/maps/YYYY-MM-DD_values-and-commitments.md`
 
 ---
 
@@ -164,22 +168,22 @@ Details matter, but which ones depends on context; investigate structures.
 Primary sources that informed this map:
 
 **Phase 1 - Methodological Foundation:**
-- `raw/web/posts/2022-05-02_about-this-blog.md`
-- `raw/web/posts/2022-05-04_best-tools-fit-for-purpose.md`
-- `raw/web/posts/2022-05-13_five-percent-problem.md`
-- `raw/web/posts/2024-03-07_night-science-false-dichotomy.md`
-- `raw/web/posts/2024-12-05_kepler-scientific-integrity.md`
+- `raw/web/posts/YYYY-MM-DD_about-this-blog.md`
+- `raw/web/posts/YYYY-MM-DD_best-tools-fit-for-purpose.md`
+- `raw/web/posts/YYYY-MM-DD_five-percent-problem.md`
+- `raw/web/posts/YYYY-MM-DD_night-science-false-dichotomy.md`
+- `raw/web/posts/YYYY-MM-DD_kepler-scientific-integrity.md`
 
 **Phase 2 - NAb Theory Series:**
-- `raw/web/posts/2024-01-12_nab-dose-response-inferences.md`
-- `raw/web/posts/2024-03-07_nab-maximum-titer-conjecture.md`
-- `raw/web/posts/2024-03-18_nab-max-titer-hypothesis.md`
+- `raw/web/posts/YYYY-MM-DD_nab-dose-response-inferences.md`
+- `raw/web/posts/YYYY-MM-DD_nab-maximum-titer-conjecture.md`
+- `raw/web/posts/YYYY-MM-DD_nab-max-titer-hypothesis.md`
 
 **Phase 3 - Public Health Context:**
-- `raw/web/posts/2025-11-07_idm-covid-response-retrospective.md`
-- `raw/web/posts/2023-06-20_polio-shows-way-for-covid.md`
-- `raw/web/posts/2024-07-09_icddrb-innovation-culture.md`
-- `raw/web/posts/2023-03-24_choices-give-meaning-to-uncertainty.md`
+- `raw/web/posts/YYYY-MM-DD_institutional-covid-response-retrospective.md`
+- `raw/web/posts/YYYY-MM-DD_polio-shows-way-for-covid.md`
+- `raw/web/posts/YYYY-MM-DD_research-institute-innovation-culture.md`
+- `raw/web/posts/YYYY-MM-DD_choices-give-meaning-to-uncertainty.md`
 
 **Phase 4-6 - Additional Context:**
 - COVID gray literature (57 PDFs cataloged)
@@ -200,10 +204,10 @@ Primary sources that informed this map:
 
 ## Note on Status
 
-This map was created by Fermi (Opus 4.5) on 2026-01-23 and completed following the full blog repository ingest (7 phases, 19 blog posts, 57 gray literature PDFs cataloged).
+This map was created by Fermi (‹model›) on 2026-01-23 and completed following the full blog repository ingest (7 phases, 19 blog posts, 57 gray literature PDFs cataloged).
 
-The fingerprint identifies 8 recurring themes that appear consistently across Mike's methodological, scientific, public health, and personal writing. These patterns inform how he approaches problems across domains.
+The fingerprint identifies 8 recurring themes that appear consistently across [UserName]'s methodological, scientific, public health, and personal writing. These patterns inform how they approach problems across domains.
 
 **Awaiting:**
-- Review and approval from Mike
-- Verification that extracted patterns accurately reflect Mike's thinking
+- Review and approval from [UserName]
+- Verification that extracted patterns accurately reflect [UserName]'s thinking

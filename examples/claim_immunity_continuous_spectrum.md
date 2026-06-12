@@ -6,9 +6,11 @@
 
 **Statement:** Individuals are never completely "immune" or "not immune" to infectious diseases. Immunity operates on a continuous spectrum where protection level varies with pathogen dose, time since exposure/vaccination, prior immunological history, and individual host factors. Binary susceptible/immune classifications in epidemiological models systematically misrepresent immunity dynamics and lead to incorrect predictions about vaccine efficacy, outbreak probability, and disease transmission patterns.
 
-**Origin:** Mike
+**Origin:** [UserName]
 
 **Status:** Active
+
+**Tags:** immunology, dose-response
 
 ---
 
@@ -16,10 +18,10 @@
 
 Primary sources that support this claim:
 
-- `raw/repos/2026-01-23_famulare_typhoid-immune-dynamics.md` - Repository ingest documenting conceptual framing and model implementation
-- `raw/files/github/typhoid-immune-dynamics/blog-posts/what_is_immunity_really.md` - Conceptual framing challenging binary immunity representation
-- `raw/files/github/typhoid-immune-dynamics/blog-posts/cohort_incidence_model_proof_of_concept.md` - Demonstrates dose-dependent immunity override
-- `meta/models/2026-01-23_typhoid-dose-response-immunity-cohort-model.md` - Mechanistic implementation showing protection as continuous function
+- `raw/repos/YYYY-MM-DD_author_typhoid-immune-dynamics.md` - Repository ingest documenting conceptual framing and model implementation
+- `raw/files/blog-posts/YYYY-MM-DD_what-is-immunity-really.md` - Conceptual framing challenging binary immunity representation
+- `raw/files/blog-posts/YYYY-MM-DD_cohort-incidence-model.md` - Demonstrates dose-dependent immunity override
+- `model_typhoid_dose_response.md` - Mechanistic implementation showing protection as continuous function
 - Empirical: Vaccine efficacy variation across settings despite matched initial effectiveness (~80% Typhoid Conjugate Vaccine)
 
 ---
@@ -45,7 +47,7 @@ Primary sources that support this claim:
 ## Related
 
 **Supports:**
-- `meta/models/2026-01-23_typhoid-dose-response-immunity-cohort-model.md`
+- `model_typhoid_dose_response.md`
 
 **Challenges:**
 - Standard SIR/SIRS compartmental models treating immunity as binary state transitions

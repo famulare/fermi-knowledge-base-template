@@ -141,7 +141,7 @@ Add to `views/persistent/connection_history.md` if this is a significant tension
 - [Item A] (Origin: [label], [date])
 - [Item B] (Origin: [label], [date])
 **Insight:** [What this tension reveals about the domain]
-**Origin:** [Who detected - user if they pointed out, Fermi if auto-detected, Co-created if collaborative]
+**Origin:** [Who detected - [UserName] if he pointed out, Fermi if auto-detected, Co-created if collaborative]
 **Status:** Open
 ```
 
@@ -191,7 +191,12 @@ Add to `views/persistent/connection_history.md` if this is a significant tension
 1. Update contradiction entry with evidence needed
 2. Add to open questions in both source items
 3. Status remains: Open
-4. Note in knowledge_map.md as active tension
+4. Note in knowledge_map.md as active tension (optional — for narrative overview)
+
+**Regenerate Router** after updating link_graph or contradiction entries:
+```bash
+uv run scripts/generate_router.py
+```
 
 ---
 

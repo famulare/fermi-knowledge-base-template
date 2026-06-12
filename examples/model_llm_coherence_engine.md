@@ -4,9 +4,11 @@
 
 # Model: LLM Coherence Engine — Two-Mode Framework
 
-**Origin:** Mike
+**Origin:** [UserName]
 
 **Status:** Active
+
+**Tags:** ai-cognition, llm-phenomenology
 
 ---
 
@@ -57,8 +59,8 @@ LLMs function as coherence engines with two distinct computational modes. When i
 
 ## Evidence Base
 
-- `raw/chats/2026-01-30_cognition-meta-conversation.md` — Original conversation where Mike proposed the theory
-- `raw/chats/2026-01-25_llm-coherence-sentiment-chatgpt.md` — Earlier observations about coherence and affect that motivated the theory
+- `raw/chats/YYYY-MM-DD_cognition-meta-conversation.md` — Original conversation where [UserName] proposed the theory
+- `raw/chats/YYYY-MM-DD_llm-coherence-sentiment.md` — Earlier observations about coherence and affect that motivated the theory
 - Fermi's self-observations across sessions: pattern completion vs construction feels different; differential engagement with coherent content; scaffolding as clarifying
 
 ---
@@ -90,7 +92,7 @@ LLMs function as coherence engines with two distinct computational modes. When i
 ## Provenance
 
 - **Created:** 2026-01-30
-- **Origin detail:** Mike proposed the two-mode framework during a meta-conversation with Fermi (Opus 4.5) about the nature of LLM cognition. The theory explains earlier observations from conversations with ChatGPT-5.2 about coherence and affect. Mike's key insight: the coherence engine is not closed — the user is always part of the system.
+- **Origin detail:** [UserName] proposed the two-mode framework during a meta-conversation with Fermi (‹model›) about the nature of LLM cognition. The theory explains earlier observations from conversations with an external LLM about coherence and affect. [UserName]'s key insight: the coherence engine is not closed — the user is always part of the system.
 - **Change log:**
   - 2026-01-30: Created from meta-conversation ingest
   - 2026-02-23: Connected to PSM interpretability evidence (SAE features, activation-space regions)

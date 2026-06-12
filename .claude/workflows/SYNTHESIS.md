@@ -113,7 +113,7 @@ grep -r "topic keyword" meta/contradictions/ --include="*.md"
 
 **Status:** Draft (must be approved before Active)
 
-**Origin:** Default to Co-created (unless clearly user-led or Fermi-led)
+**Origin:** Default to Co-created (unless clearly [UserName]-led or Fermi-led)
 
 **Origin Detail section:**
 ```markdown
@@ -251,9 +251,14 @@ Should I:
    - Create synthesis links
    - Mark source models as superseded but linked
 
-5. **Update knowledge_map:**
+5. **Update knowledge_map** (optional — for narrative overview):
    - Replace source models with synthesis in overview
    - Note consolidation
+
+6. **Regenerate router:**
+   ```bash
+   uv run scripts/generate_router.py
+   ```
 
 ### User Requests Revisions
 
@@ -274,7 +279,7 @@ Should I:
    - Topic: [topic]
    - Reason: [Why rejected - e.g., "Forced unification lost critical distinction"]
    ```
-4. **Learn from rejection** - Add to learning/connection_feedback.md
+4. **Learn from rejection** - Note patterns in the rejection reason for future reference
 
 ---
 
@@ -448,6 +453,7 @@ Before proposing synthesis:
 - [ ] User approval required before activation
 - [ ] Source models preserved (not deleted) when superseded
 - [ ] Provenance fully documented
+- [ ] **Component count consistency:** The number of components/filters/stages in the summary/heading matches the actual count in the body (known error pattern: source claim count ≠ synthesis component count)
 
 After synthesis approved:
 

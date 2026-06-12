@@ -2,7 +2,7 @@
 
 **Trigger:** User provides web URL or says "ingest this" with URL context
 
-**Status:** Fully Implemented
+**Status:** Phase 6+ - Newly Implemented
 
 ---
 
@@ -23,12 +23,12 @@ Capture **intellectual content** from web sources:
 
 | Content | This Workflow (INGEST_WEB) | INGEST_CURATED |
 |---------|---------------------------|----------------|
-| Your papers/posts | Yes | No |
+| [UserName]'s papers/posts | Yes | No |
 | External content for Fermi synthesis | Yes | No |
 | External content to preserve with clear attribution | No | Yes |
-| Content you find interesting (not yours) | Consider INGEST_CURATED | Yes |
+| Content [UserName] finds interesting (not his) | Consider INGEST_CURATED | Yes |
 
-**Rule of thumb:** If you want external content clearly labeled as someone else's thinking (not your own, not Fermi's synthesis), use INGEST_CURATED.
+**Rule of thumb:** If [UserName] wants external content clearly labeled as someone else's thinking (not his own, not Fermi's synthesis), use INGEST_CURATED.
 
 ---
 
@@ -160,7 +160,7 @@ Content type unclear. What is this?
 
 ### Step 4: Check Authorship
 
-**Ask for user-authored content:**
+**Ask for [UserName]-authored content:**
 ```
 Are you an author on this [paper/post/report]?
 
@@ -171,7 +171,7 @@ Are you an author on this [paper/post/report]?
 This affects origin attribution in meta entries.
 ```
 
-**Note:** For your content, we're extracting **your** ideas. For external content, we're extracting ideas **about** the topic for KB context.
+**Note:** For [UserName]'s content, we're extracting **his** ideas. For external content, we're extracting ideas **about** the topic for KB context.
 
 ---
 
@@ -256,6 +256,24 @@ WebFetch "$URL" "Extract: title, authors, abstract, and main sections.
 For each section, preserve key claims, evidence, assumptions, and
 limitations. Focus on intellectual content, not full text reproduction."
 ```
+
+**Accuracy verification (papers):**
+After extraction, before saving:
+1. **Author list:** Cross-check extracted author list against DOI/PubMed metadata. Do NOT rely on extraction alone — author lists are a known hallucination/truncation risk.
+2. **Key numbers:** Verify that quantitative values (percentages, confidence intervals, p-values, sample sizes) in the extraction match the source exactly. Include inline source annotations: `(source: Table 2 / Equation 5 / p. 12)`.
+3. **Provenance consistency:** Ensure the author list in the Provenance section matches the Authors section in the header.
+
+**Grouped extraction checklist (multiple sources in one file):**
+When extracting multiple papers, reports, or documents into a single file:
+1. **Hard boundaries:** Each source gets its own clearly headed section. No narrative bridges that blur source boundaries.
+2. **Per-source attribution:** Every finding, number, and claim must be explicitly tagged to its source within the file. Never let a claim float between sections.
+3. **No cross-source inference in body:** Cross-document themes or synthesis belong in a clearly labeled "Cross-Document Themes" section at the end, not woven into individual source sections.
+4. **Conflation self-check:** After extraction, review each source section and ask: "Could any claim in this section actually belong to an adjacent source?" Pay special attention to:
+   - Country-specific results in multi-country collections
+   - Parameter values shared across related models
+   - Temporal data in sequential reports (Re estimates, prevalence, coverage)
+   - Author lists for papers with overlapping co-author sets
+5. **Supersession notes:** When a later source in the group revises an estimate from an earlier source, explicitly note the supersession rather than presenting both numbers without context.
 
 ---
 
@@ -430,7 +448,7 @@ raw/web/misc/YYYY-MM-DD_title-slug.md
 - Lowercase, hyphens for spaces
 - Remove special characters
 - Truncate to ~50 chars
-- Example: `topic-specific-analysis-dynamics`
+- Example: `polio-eradication-endgame-dynamics`
 
 ---
 
@@ -863,7 +881,7 @@ raw/web/misc/YYYY-MM-DD_title-slug.md
 
 ## Provenance
 
-**Authorship:** [Your role if any]
+**Authorship:** [[UserName]'s role if any]
 
 **Citation:**
 [Author list]. ([Year]). [Title]. [Institution]. [Report number]. [URL]
@@ -978,7 +996,7 @@ raw/web/misc/YYYY-MM-DD_title-slug.md
 
 **Project:** [Project name and maintainers]
 
-**Authorship:** [Your role if any]
+**Authorship:** [[UserName]'s role if any]
 
 **Citation:**
 [Project name]. ([Version/Date]). [Doc title]. [URL]
@@ -1013,28 +1031,28 @@ raw/web/misc/YYYY-MM-DD_title-slug.md
 ## Origin Attribution Decision Tree
 
 ```
-Is this authored by you?
+Is this authored by [UserName]?
 ├─ Yes (primary author)
 │   └─ Origin: [UserName]
-│       - Your ideas, extracted and organized
-│       - Meta entries are your claims/models
+│       - His ideas, extracted and organized
+│       - Meta entries are his claims/models
 │
 ├─ Yes (co-author)
 │   └─ Ask: Should these be "Origin: [UserName]" or "Origin: Co-created ([UserName] + Fermi)"?
-│       - [UserName]: If your contributions are primary focus
+│       - [UserName]: If his contributions are primary focus
 │       - Co-created: If collaborative synthesis
 │
 └─ No (external author)
     └─ CONSIDER USING INGEST_CURATED WORKFLOW INSTEAD
         │
-        ├─ If you want to preserve as external content with clear attribution:
+        ├─ If [UserName] wants to preserve as external content with clear attribution:
         │   └─ Use INGEST_CURATED workflow
         │       - Origin: External (Author Name)
         │       - Stored in raw/curated/
         │       - Requires "why" reason
         │       - Clear epistemic boundary maintained
         │
-        └─ If you want Fermi's interpretive synthesis:
+        └─ If [UserName] wants Fermi's interpretive synthesis:
             └─ Origin: Fermi (‹model›)
                 - Interpretation of external work
                 - Bringing external ideas into KB for context
@@ -1045,12 +1063,12 @@ Is this authored by you?
 
 | Scenario | Workflow | Rationale |
 |----------|----------|-----------|
-| Paper you want to reference | INGEST_CURATED | Keep clear it's external thinking |
-| Paper you want Fermi to analyze | INGEST_WEB | Fermi's interpretation is the value |
-| External blog you found interesting | INGEST_CURATED | Preserve external attribution |
-| External paper for topical context | Either | Depends on whether you want clear attribution or synthesis |
+| Paper [UserName] wants to reference | INGEST_CURATED | Keep clear it's external thinking |
+| Paper [UserName] wants Fermi to analyze | INGEST_WEB | Fermi's interpretation is the value |
+| External blog [UserName] found interesting | INGEST_CURATED | Preserve external attribution |
+| External paper for topical context | Either | Depends on whether [UserName] wants clear attribution or synthesis |
 
-**Example origin detail for your paper:**
+**Example origin detail for [UserName]'s paper:**
 ```markdown
 **Origin:** [UserName]
 
@@ -1088,7 +1106,7 @@ Paper: [Title], [Journal], [Date]
 Raw capture: raw/web/papers/[file].md
 
 I extracted claims and models to provide KB context on [topic]. Original
-authors stated findings; this is my synthesis for the knowledge base.
+authors stated findings; this is my synthesis for [UserName]'s knowledge base.
 
 Note: For external content with clear attribution preserved, consider using
 INGEST_CURATED workflow with Origin: External (Author).
@@ -1133,7 +1151,7 @@ grep -r "[key concept]" meta/models/ --include="*.md"
 
 **Tags:**
 - Add high-signal tags based on content
-- Domain tags (relevant topic areas)
+- Domain tags (epidemiology, vaccine-policy, modeling, etc.)
 - Method tags (if applicable)
 - Avoid proliferation (prefer 2-4 tags per entry)
 
@@ -1170,12 +1188,14 @@ grep -r "[key concept]" meta/models/ --include="*.md"
 # - Tags added
 ```
 
-**Knowledge Map:**
+**Knowledge Map** (`views/persistent/knowledge_map.md`):
+(Optional — for narrative overview only; `index/router.md` is the primary navigation surface.)
+Update if this ingest opens a new domain area or adds a significant new framework.
+
+**Regenerate Router:**
+After updating index files, regenerate the router to reflect changes:
 ```bash
-# Update views/persistent/knowledge_map.md if:
-# - New domain added
-# - Significant new model or framework
-# - Cross-domain synthesis opportunity emerges
+uv run scripts/generate_router.py
 ```
 
 ---
@@ -1207,7 +1227,7 @@ Contradictions detected: [None | Description if any]
 
 Origin: [[UserName] | External author names]
 
-Co-Authored-By: Claude ‹model› <noreply@anthropic.com>
+Co-Authored-By: Claude (‹model›) <noreply@anthropic.com>
 ```
 
 ---
@@ -1283,7 +1303,7 @@ Which approach?
 - *.gov (government reports)
 - WHO, UN, World Bank institutional sites
 - *.edu institutional reports
-- Foundation sites (Gates, Wellcome, etc.)
+- Foundation sites ([Institution], Wellcome, etc.)
 
 ### Documentation Domains
 - *.readthedocs.io
@@ -1295,18 +1315,18 @@ Which approach?
 
 ## Examples
 
-### Example 1: Your Paper
+### Example 1: [UserName]'s PLOS Paper
 
 ```bash
-URL: https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.XXXXXXX
+URL: https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.2002468
 
 # Detect: Scientific paper (PLOS domain)
 # Fetch: WebFetch extracts title, authors, abstract, sections
 # Ask: "Are you an author?" → Yes (primary)
-# Store: raw/web/papers/YYYY-MM-DD_[username]_topic-title-slug.md
-# Meta: Create model (mechanism) + claims (findings)
+# Store: raw/web/papers/2017-09-12_[username]_poliovirus-excretion-dynamics.md
+# Meta: Create model (excretion dynamics) + claims (duration findings)
 # Origin: [UserName]
-# Commit: "Ingest: Paper - [UserName] - Topic title"
+# Commit: "Ingest: Paper - [UserName] - Poliovirus excretion dynamics"
 ```
 
 ### Example 2: External arXiv Preprint
@@ -1323,18 +1343,18 @@ URL: https://arxiv.org/abs/2301.12345
 # Commit: "Ingest: Preprint - Smith et al - Neural network approach"
 ```
 
-### Example 3: Your Blog Post
+### Example 3: [UserName]'s Blog Post
 
 ```bash
-URL: https://yourblog.com/blog/modeling-thoughts
+URL: https://[username].com/blog/immunity-modeling-thoughts
 
 # Detect: Blog post (personal domain, /blog/ path)
 # Fetch: WebFetch extracts post content
 # Ask: "Are you an author?" → Yes
-# Store: raw/web/posts/2025-03-20_modeling-thoughts.md
+# Store: raw/web/posts/2025-03-20_immunity-modeling-thoughts.md
 # Meta: Create claims or map depending on content
 # Origin: [UserName]
-# Commit: "Ingest: Blog post - [UserName] - Modeling thoughts"
+# Commit: "Ingest: Blog post - [UserName] - Immunity modeling thoughts"
 ```
 
 ---
@@ -1358,7 +1378,8 @@ URL: https://yourblog.com/blog/modeling-thoughts
 
 ## Workflow Status
 
-**Status:** Fully Implemented
+**Implemented:** YYYY-MM-DD
+**Last updated:** YYYY-MM-DD
 
 **Integration:**
 - Fully integrated with CONTRADICTIONS and CONNECTIONS workflows

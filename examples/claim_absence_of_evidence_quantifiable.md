@@ -6,15 +6,17 @@
 
 **Statement:** Absence of evidence is not evidence of absence, but it CAN be quantified probabilistically. Given a stochastic model of transmission and detection, the probability of elimination given zero detected cases increases with time since the last case, the surveillance sensitivity, and the case-to-infection ratio. This probabilistic framing replaces binary yes/no certification with continuous probability estimates.
 
-**Origin:** Mike
+**Origin:** [UserName]
 
 **Status:** Active
+
+**Tags:** epidemiology, methodology
 
 ---
 
 ## Evidence
 
-- `raw/web/papers/2015-08-28_famulare_nigeria-poliovirus-elimination.md` - Stochastic Gillespie simulation framework estimates WPV1 elimination probability at 84%, WPV3 at >99%, and cVDPV2 as unlikely, validated when subsequent cVDPV2 case fell at 54th percentile of predictive distribution
+- `raw/web/papers/YYYY-MM-DD_author_poliovirus-elimination-probability.md` - Stochastic Gillespie simulation framework estimates WPV1 elimination probability at 84%, WPV3 at >99%, and cVDPV2 as unlikely, validated when subsequent cVDPV2 case fell at 54th percentile of predictive distribution
 
 ---
 
@@ -36,8 +38,8 @@
 ## Related
 
 **Supports:**
-- `meta/claims/2026-02-06_data-driven-elimination-over-calendar-rules.md`
-- `meta/claims/2026-01-30_prediction-intervals-as-success-metric.md`
+- `meta/claims/YYYY-MM-DD_data-driven-elimination-over-calendar-rules.md`
+- `meta/claims/YYYY-MM-DD_prediction-intervals-as-success-metric.md`
 
 ---
 
@@ -45,4 +47,4 @@
 
 - **Created:** 2026-02-06
 - **Change log:**
-  - 2026-02-06: Created from raw/web/papers/2015-08-28_famulare_nigeria-poliovirus-elimination.md
+  - 2026-02-06: Created from raw/web/papers/YYYY-MM-DD_author_poliovirus-elimination-probability.md

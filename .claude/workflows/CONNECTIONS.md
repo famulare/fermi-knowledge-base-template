@@ -112,18 +112,15 @@ User: "Scan for connections"
 **If yes to any:** Consider surfacing
 **If no to all:** Suppress (too trivial)
 
-### Step 3: Check Suppression Memory
+### Step 3: Apply Quality Filter
 
 **Have similar connections been flagged as unhelpful?**
 
-Check `learning/connection_feedback.md`:
-```bash
-grep "Suppression" learning/connection_feedback.md
-```
+Use judgment based on prior feedback patterns in conversation history.
 
-**If this pattern previously marked unhelpful:** Suppress
+**If this pattern type has been consistently unhelpful:** Suppress
 
-**If uncertain:** Surface but flag for feedback
+**If uncertain:** Surface but keep concise
 
 ---
 
@@ -300,20 +297,12 @@ After surfacing connection, note user response:
 **Neutral:**
 - No response (connection acknowledged but not acted on)
 
-### Record in Learning Log
+### Record Significant Connections
 
-Add to `learning/connection_feedback.md`:
-
-```markdown
-### YYYY-MM-DD: [Connection Description]
-
-**Type:** [Cross-domain | Scale-crossing | Contradiction | Assumption]
-
-**Source A:** meta/[file-A].md
-**Source B:** meta/[file-B].md
-
-**Connection surfaced:**
-[Brief description]
+Interesting cross-domain connections discovered during ingest or query are
+captured in meta entries (claims, models, maps) with appropriate cross-references
+and `index/link_graph.md` updates. No separate feedback log is needed — the
+connection's value is demonstrated by whether it gets referenced in future work.
 
 **User feedback:** [Useful | Trivial | Noise | Already knew]
 
@@ -340,14 +329,7 @@ Add to `learning/connection_feedback.md`:
 
 ### Track Unhelpful Patterns
 
-In `learning/connection_feedback.md`:
-
-```markdown
-## Suppression Rules
-
-### Suppress: [Pattern Type]
-**Reason:** [Why this pattern is unhelpful]
-**Examples:** [Instances where this was flagged]
+Suppression is judgment-based rather than log-based. Known unhelpful patterns:
 **Learned:** YYYY-MM-DD
 **Confidence:** High | Medium | Low
 

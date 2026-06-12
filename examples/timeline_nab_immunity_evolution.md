@@ -4,17 +4,19 @@
 
 # Timeline: NAb Immunity Theory Evolution
 
-**Origin:** Fermi (Opus 4.5)
+**Origin:** Fermi (‹model›)
 
 **Status:** Active
 
 **Last updated:** 2026-01-23
 
+**Tags:** immunology
+
 ---
 
 ## Purpose
 
-This timeline tracks the evolution of Mike's thinking about neutralizing antibody immunity, from the foundational polio work through the Night Science series that extends and connects the ideas.
+This timeline tracks the evolution of [UserName]'s thinking about neutralizing antibody immunity, from the foundational polio work through the Night Science series that extends and connects the ideas.
 
 ---
 
@@ -29,7 +31,7 @@ This timeline tracks the evolution of Mike's thinking about neutralizing antibod
 - Introduces γ = 0.46 parameter (later interpreted as sub-diffusive)
 - Links immunity to shedding, susceptibility, and transmission
 
-**Source:** `raw/web/papers/2018-04-27_famulare_polio-eradication-stability.md`
+**Source:** `raw/web/papers/YYYY-MM-DD_author_polio-eradication-stability.md`
 
 ---
 
@@ -42,7 +44,7 @@ This timeline tracks the evolution of Mike's thinking about neutralizing antibod
 - Shows immunity is always leaky (dose-dependent)
 - Demonstrates macro-scale statistics reveal tissue biophysics
 
-**Source:** `raw/web/posts/2024-01-12_nab-dose-response-inferences.md`
+**Source:** `raw/web/posts/YYYY-MM-DD_nab-dose-response-inferences.md`
 
 ---
 
@@ -55,7 +57,7 @@ This timeline tracks the evolution of Mike's thinking about neutralizing antibod
 - Compiles evidence from polio, COVID, RSV
 - Highlights "gigavax" case as near-ceiling example
 
-**Source:** `raw/web/posts/2024-03-07_nab-maximum-titer-conjecture.md`
+**Source:** `raw/web/posts/YYYY-MM-DD_nab-maximum-titer-conjecture.md`
 
 ---
 
@@ -68,7 +70,7 @@ This timeline tracks the evolution of Mike's thinking about neutralizing antibod
 - Connects Night Science to Seattle Flu Study success
 - Announces intention to share more openly
 
-**Source:** `raw/web/posts/2024-03-07_night-science-false-dichotomy.md`
+**Source:** `raw/web/posts/YYYY-MM-DD_night-science-false-dichotomy.md`
 
 ---
 
@@ -82,7 +84,7 @@ This timeline tracks the evolution of Mike's thinking about neutralizing antibod
 - Derives minimum viable dose = 1.1 at max titer
 - Discovers 1984 Smith precedent for flu
 
-**Source:** `raw/web/posts/2024-03-18_nab-max-titer-hypothesis.md`
+**Source:** `raw/web/posts/YYYY-MM-DD_nab-max-titer-hypothesis.md`
 
 ---
 
@@ -146,11 +148,11 @@ Post 3 (Mar 2024): Unification
 
 ## Evidence Base
 
-- `raw/web/papers/2018-04-27_famulare_polio-eradication-stability.md`
-- `raw/web/posts/2024-01-12_nab-dose-response-inferences.md`
-- `raw/web/posts/2024-03-07_nab-maximum-titer-conjecture.md`
-- `raw/web/posts/2024-03-18_nab-max-titer-hypothesis.md`
-- `raw/web/posts/2024-03-07_night-science-false-dichotomy.md`
+- `raw/web/papers/YYYY-MM-DD_author_polio-eradication-stability.md`
+- `raw/web/posts/YYYY-MM-DD_nab-dose-response-inferences.md`
+- `raw/web/posts/YYYY-MM-DD_nab-maximum-titer-conjecture.md`
+- `raw/web/posts/YYYY-MM-DD_nab-max-titer-hypothesis.md`
+- `raw/web/posts/YYYY-MM-DD_night-science-false-dichotomy.md`
 
 ---
 

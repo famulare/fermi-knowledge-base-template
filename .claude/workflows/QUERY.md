@@ -38,55 +38,32 @@ Determine what the user is asking for:
 
 ### 2. Retrieval Strategy
 
-#### **Step 2a: Start with Index Layer**
+**Follow the canonical procedure in `index/RETRIEVAL_RECIPE.md`.**
 
-Check indices first for efficient retrieval:
+#### **Step 2a: Start with Router**
 
-**Tags** (`index/tags.md`):
-- Search for relevant high-signal tags
-- Get file lists associated with tags
+The router (`index/router.md`) is loaded at session start and provides:
+- Domain groupings with file inventories
+- Large file section inventories with line ranges
 
-**Entities** (`index/entities.md`):
-- Check for entity name or aliases
-- Find mentions and key files
+From the query, identify 1-3 relevant domain groups and select 3-8 candidate files.
 
-**Glossary** (`index/glossary.md`):
-- For definition queries, check glossary first
+#### **Step 2b: Targeted Search Within Candidates**
 
-**Link Graph** (`index/link_graph.md`):
-- For relationship queries, check structural links
+Search with specific terms **scoped to candidate paths** (not whole-repo):
+- Use Grep scoped to identified files or directories
+- For multi-word concepts, search the most distinctive term first
+- Prefer meta/ for synthesis queries, raw/ for provenance queries
 
-#### **Step 2b: Search Meta Layer**
+#### **Step 2c: Read Matching Sections**
 
-Use grep across meta/ for keywords:
+- Files under 20KB: read the full file
+- Files over 20KB (marked LARGE in router): consult section inventory,
+  read only the relevant section(s) using Read with offset/limit
 
-```bash
-# Search for keyword in meta layer
-grep -r "keyword" meta/ --include="*.md"
-
-# For specific file types
-grep -r "keyword" meta/claims/ --include="*.md"
-grep -r "keyword" meta/models/ --include="*.md"
-```
-
-Priority search order:
-1. `meta/claims/` - For factual assertions
-2. `meta/models/` - For mechanistic explanations
-3. `meta/maps/` - For domain overviews
-4. `meta/contradictions/` - For tensions
-5. `meta/timelines/` - For evolution queries
-
-#### **Step 2c: Search Raw Layer (if needed)**
-
-Search raw/ only when:
-- Meta layer has insufficient detail
-- User asks for "exact wording" or "what I said"
-- Verifying provenance
-- Meta answer has low confidence
-
-```bash
-grep -r "keyword" raw/ --include="*.md"
-```
+**Fallback:** If the router is insufficient for candidate identification,
+load specific index files (tags.md, entities.md, glossary.md) as needed.
+Do not load all of them preemptively.
 
 ---
 
@@ -367,7 +344,7 @@ Origin attribution in the Fermi KB treats idea provenance as first-class metadat
 **Core mechanism** (Origin: Co-created, 2026-01-22):
 
 Every non-trivial idea in the meta layer carries an explicit label:
-- Origin: [UserName] - Your ideas and statements
+- Origin: [UserName] - [UserName]'s ideas and statements
 - Origin: Fermi (‹model›) - AI-generated ideas
 - Origin: Co-created - Collaborative synthesis
 

@@ -4,9 +4,11 @@
 
 # Model: Sabin-2 Evolutionary-Epidemiological Reversion
 
-**Origin:** Mike (Wong 2023 building on Valesano 2021)
+**Origin:** [UserName] (Wong 2023 building on Valesano 2021)
 
 **Status:** Active
+
+**Tags:** infectious-disease, molecular-evolution
 
 ---
 
@@ -42,9 +44,9 @@ A stochastic evolutionary-epidemiological model of how Sabin 2 poliovirus revert
 
 ## Evidence Base
 
-- `raw/web/papers/2017-2023_famulare-senior-author-polio-program.md:Paper-5` — Wong 2023: 92.4% gatekeeper reversion, 39.6% stochastic extinction, sanitation as critical factor
-- `raw/web/papers/2017-2023_famulare-senior-author-polio-program.md:Paper-7` — Valesano 2021: 24 convergent mutations, A481G fixes in 2-3 weeks, bottleneck ~2 genomes
-- **Code:** https://github.com/InstituteforDiseaseModeling/cvpdv2-evo-epi
+- `raw/web/papers/YYYY-MM-DD_author_polio-program.md:Paper-5` — Wong 2023: 92.4% gatekeeper reversion, 39.6% stochastic extinction, sanitation as critical factor
+- `raw/web/papers/YYYY-MM-DD_author_polio-program.md:Paper-7` — Valesano 2021: 24 convergent mutations, A481G fixes in 2-3 weeks, bottleneck ~2 genomes
+- **Code:** `https://github.com/<org>/cvdpv2-evo-epi`
 
 ---
 
@@ -74,16 +76,19 @@ A stochastic evolutionary-epidemiological model of how Sabin 2 poliovirus revert
 ## Tensions/Coexistence
 
 **Extends:**
-- `meta/models/2026-01-23_polio-multiscale-transmission-immunity-model.md` — Adds evolutionary dynamics to the fixed-parameter Sabin model. The 2018 framework noted "Sabin evolutionary dynamics during prolonged circulation are largely unstudied"; this model fills that gap.
+- `meta/models/YYYY-MM-DD_polio-multiscale-transmission-immunity-model.md` — Adds evolutionary dynamics to the fixed-parameter Sabin model. The 2018 framework noted "Sabin evolutionary dynamics during prolonged circulation are largely unstudied"; this model fills that gap.
 
 **Coexists with:**
-- `meta/models/2026-02-06_four-scale-hierarchical-transmission.md` — Complementary: this model handles reversion; the four-scale model handles transmission structure. Full picture requires both.
+- `meta/models/YYYY-MM-DD_four-scale-hierarchical-transmission.md` — Complementary: this model handles reversion; the four-scale model handles transmission structure. Full picture requires both.
+
+**Related contradiction:**
+- `contradiction_cvdpv_emergence.md` — Documents the primacy tension among the population-immunity, stochastic-establishment, and transmission-bottleneck filters this model formalizes.
 
 ---
 
 ## Provenance
 
 - **Created:** 2026-02-06
-- **Origin detail:** Mike directed the Wong 2023 study as senior/corresponding author; Valesano 2021 (External: Valesano/Lauring team) provided the genomic evidence that this model formalizes.
+- **Origin detail:** [UserName] directed the Wong 2023 study as senior/corresponding author; Valesano 2021 (External: Valesano/Lauring team) provided the genomic evidence that this model formalizes.
 - **Change log:**
   - 2026-02-06: Created from senior-author polio program ingest

@@ -1,20 +1,20 @@
 # Workflow: Curated External Content Ingest
 
-**Trigger:** User wants to ingest content created by others (not your work)
+**Trigger:** User wants to ingest content created by others (not [UserName]'s work)
 
-**Status:** Fully Implemented
+**Status:** Implemented 2026-01-24
 
 ---
 
 ## Purpose
 
-Capture **external content** that you find valuable while:
-1. Maintaining clear epistemic boundaries (not your thinking)
+Capture **external content** that [UserName] finds valuable while:
+1. Maintaining clear epistemic boundaries (not [UserName]'s thinking)
 2. Recording why it's being ingested (REQUIRED)
 3. Preserving proper attribution to original creators
 
 **Key distinction from other ingest workflows:**
-- `INGEST_WEB` / `INGEST_REPO` are for your content or interpretive extraction
+- `INGEST_WEB` / `INGEST_REPO` are for [UserName]'s content or interpretive extraction
 - `INGEST_CURATED` is for external content that should remain clearly attributed to others
 
 ---
@@ -22,15 +22,15 @@ Capture **external content** that you find valuable while:
 ## When to Use This Workflow
 
 Use INGEST_CURATED when:
-- You find a paper by someone else that's interesting
-- You encounter a blog post with ideas worth preserving
-- You want to reference an external repository's architecture
-- You see AI-generated content from others worth capturing
-- Content is clearly **not your work** but valuable for the KB
+- [UserName] finds a paper by someone else that's interesting
+- [UserName] encounters a blog post with ideas worth preserving
+- [UserName] wants to reference an external repository's architecture
+- [UserName] sees AI-generated content from others worth capturing
+- Content is clearly **not [UserName]'s work** but valuable for the KB
 
 Use other workflows when:
-- Content is your own work → `INGEST_WEB`, `INGEST_REPO`, etc.
-- You are co-author → Use appropriate workflow with your attribution
+- Content is [UserName]'s own work → `INGEST_WEB`, `INGEST_REPO`, etc.
+- [UserName] is co-author → Use appropriate workflow with [UserName] attribution
 - Pure interpretation/synthesis by Fermi → Origin: Fermi
 
 ---
@@ -53,12 +53,12 @@ Author type assessment:
 
 3. Human with AI assistance
    → Origin: External (Author + AI)
-   Example: External (Jones + GPT-4)
+   Example: External (Jones + ‹model›)
 
 4. AI-generated content
    → Origin: External (Company Model)
-   Example: External (Anthropic Claude 3.5 Sonnet)
-   Example: External (OpenAI GPT-4)
+   Example: External (Anthropic Claude ‹model›)
+   Example: External ([Provider] ‹model›)
 
 5. Organization/Institution
    → Origin: External (Organization)
@@ -94,7 +94,7 @@ Please also explain briefly: How does this relate to your existing thinking?
 **Document the response in raw file:**
 ```markdown
 **Ingest Reason:** [Category: Brief explanation]
-**Relation to your thinking:** [How this connects to existing KB content]
+**Relation to [UserName]'s thinking:** [How this connects to existing KB content]
 ```
 
 ---
@@ -118,7 +118,7 @@ Please also explain briefly: How does this relate to your existing thinking?
 **Origin:** External ([Author])
 **Original Author(s):** [Full names, affiliations if known]
 **Original Source:** [URL or publication info]
-**Ingest Reason:** [Why you found this interesting]
+**Ingest Reason:** [Why [UserName] found this interesting]
 **Ingest Date:** YYYY-MM-DD
 
 ---
@@ -149,7 +149,7 @@ Do you want to create meta entries (claims, models, maps) from this content?
 
 1. **Yes** - I want to engage with and structure these ideas
    → Create meta entries with Origin: External (Author)
-   → Clear separation from your own claims/models
+   → Clear separation from [UserName]'s own claims/models
 
 2. **No** - Keep as reference only
    → Raw capture is sufficient
@@ -180,7 +180,7 @@ Use appropriate templates:
 ### Step 5: Connect
 
 **Run CONNECTIONS workflow** to identify relationships between:
-- External content and your existing thinking
+- External content and [UserName]'s existing thinking
 - External content and other curated material
 - External content and KB models/claims
 
@@ -189,8 +189,8 @@ Use appropriate templates:
 | Relationship | Meaning |
 |--------------|---------|
 | `relates to` | Topically similar, shares subject matter |
-| `supports` | External content provides evidence for your ideas |
-| `contradicts` | External content conflicts with your ideas |
+| `supports` | External content provides evidence for [UserName]'s ideas |
+| `contradicts` | External content conflicts with [UserName]'s ideas |
 | `extends` | External content builds on similar foundations |
 | `challenges` | External content presents alternative framing |
 
@@ -220,7 +220,7 @@ Use appropriate templates:
 ```
 Who created this content?
 │
-├─ You (primary or co-author)
+├─ [UserName] (primary or co-author)
 │   └─ DON'T use INGEST_CURATED
 │       Use INGEST_WEB or INGEST_REPO instead
 │
@@ -230,7 +230,7 @@ Who created this content?
 ├─ Human + AI collaboration
 │   └─ Origin: External (Author + AI)
 │
-├─ AI-generated (not yours)
+├─ AI-generated (not [UserName]'s)
 │   └─ Origin: External (Company Model)
 │
 └─ Organization/Institution
@@ -247,7 +247,7 @@ Who created this content?
 **Origin:** External ([First Author] et al.)
 **Original Author(s):** [Full author list with affiliations]
 **Original Source:** [Journal, DOI, URL]
-**Ingest Reason:** [Why you found this interesting]
+**Ingest Reason:** [Why [UserName] found this interesting]
 **Ingest Date:** YYYY-MM-DD
 
 ---
@@ -276,7 +276,7 @@ Who created this content?
 
 ---
 
-## Relevance to Your Thinking
+## Relevance to [UserName]'s Thinking
 
 [Why this was ingested - how it relates to existing KB content]
 
@@ -310,7 +310,7 @@ Who created this content?
 **Origin:** External ([Author])
 **Original Author(s):** [Author name, affiliation/platform]
 **Original Source:** [URL]
-**Ingest Reason:** [Why you found this interesting]
+**Ingest Reason:** [Why [UserName] found this interesting]
 **Ingest Date:** YYYY-MM-DD
 
 ---
@@ -337,7 +337,7 @@ Who created this content?
 
 ---
 
-## Relevance to Your Thinking
+## Relevance to [UserName]'s Thinking
 
 [Why this was ingested - how it relates to existing KB content]
 
@@ -367,7 +367,7 @@ Who created this content?
 **Origin:** External ([Authors/Maintainers])
 **Original Author(s):** [Names from README/LICENSE]
 **Original Source:** [GitHub URL]
-**Ingest Reason:** [Why you found this interesting]
+**Ingest Reason:** [Why [UserName] found this interesting]
 **Ingest Date:** YYYY-MM-DD
 **Commit:** [SHA at time of ingest]
 
@@ -395,7 +395,7 @@ Who created this content?
 
 ---
 
-## Relevance to Your Thinking
+## Relevance to [UserName]'s Thinking
 
 [Why this was ingested - how it relates to existing KB content]
 
@@ -426,7 +426,7 @@ Who created this content?
 **Origin:** External ([Company Model])
 **Original Author(s):** AI-generated by [Model name and version]
 **Original Source:** [URL or context of generation]
-**Ingest Reason:** [Why you found this interesting]
+**Ingest Reason:** [Why [UserName] found this interesting]
 **Ingest Date:** YYYY-MM-DD
 
 ---
@@ -449,7 +449,7 @@ Who created this content?
 
 ---
 
-## Relevance to Your Thinking
+## Relevance to [UserName]'s Thinking
 
 [Why this was ingested - how it relates to existing KB content]
 
@@ -464,7 +464,7 @@ Who created this content?
 
 ## Provenance
 
-**Model:** [e.g., Claude 3.5 Sonnet, GPT-4, etc.]
+**Model:** [e.g., Claude ‹model›, [Provider] ‹model›, etc.]
 **Generated by:** [User who prompted, if known]
 **Generation date:** [If known]
 **Retrieved from:** [URL or description]
@@ -477,12 +477,12 @@ Who created this content?
 
 | Aspect | INGEST_WEB | INGEST_CURATED |
 |--------|------------|----------------|
-| Default assumption | Your content or interpretive extraction | External content, not yours |
+| Default assumption | [UserName]'s content or interpretive extraction | External content, not [UserName]'s |
 | Origin attribution | [UserName] or Fermi | External (Author) |
 | Meta extraction | Default yes | Ask first—may be reference only |
 | "Why" question | Optional | **Required** |
 | Raw location | `raw/web/` | `raw/curated/` |
-| Epistemic framing | Your ideas or Fermi's interpretation | Preserving others' ideas with attribution |
+| Epistemic framing | [UserName]'s ideas or Fermi's interpretation | Preserving others' ideas with attribution |
 
 ---
 
@@ -522,7 +522,7 @@ Meta layer:
 Connections to KB:
 - [Relates to/supports/contradicts] [meta entries]
 
-Co-Authored-By: Claude ‹model› <noreply@anthropic.com>
+Co-Authored-By: Claude (‹model›) <noreply@anthropic.com>
 ```
 
 ---
@@ -539,7 +539,7 @@ Before completing curated content ingest:
 **Ingest Reason (REQUIRED):**
 - [ ] Asked user why this is being ingested
 - [ ] Documented ingest reason in raw file
-- [ ] Documented relation to your thinking
+- [ ] Documented relation to [UserName]'s thinking
 
 **Raw Layer:**
 - [ ] File stored in correct `raw/curated/[type]/` directory
@@ -557,9 +557,9 @@ Before completing curated content ingest:
 - [ ] Contradictions flagged if detected
 
 **Epistemic Clarity:**
-- [ ] Clear this is external content, not your thinking
+- [ ] Clear this is external content, not [UserName]'s thinking
 - [ ] Relationship types explicit (relates to vs supports vs contradicts)
-- [ ] No conflation with your own ideas
+- [ ] No conflation with [UserName]'s own ideas
 
 ---
 
@@ -572,21 +572,22 @@ After curated ingest:
 - Surface cross-domain patterns if any
 
 ### With CONTRADICTIONS.md
-If external content conflicts with your ideas:
+If external content conflicts with [UserName]'s ideas:
 - Create contradiction entry
 - Note one side is External origin
 - Document the tension clearly
 
 ### With Other Ingest Workflows
-- If content turns out to be user-authored → switch to INGEST_WEB
+- If content turns out to be [UserName]-authored → switch to INGEST_WEB
 - If user wants Fermi's interpretation → create separate Fermi-origin meta entry
-- Can reference curated content from user-origin syntheses
+- Can reference curated content from [UserName]-origin syntheses
 
 ---
 
 ## Status
 
-**Status:** Fully Implemented
+**Status:** Implemented
+**Created:** 2026-01-24
 **Dependencies:**
 - Templates: `meta/claims/_TEMPLATE.md`, `meta/models/_TEMPLATE.md`, `meta/maps/_TEMPLATE.md`
 - Workflows: CONNECTIONS.md, CONTRADICTIONS.md
@@ -596,11 +597,11 @@ If external content conflicts with your ideas:
 
 ## Summary
 
-INGEST_CURATED captures external content you find valuable while maintaining clear epistemic boundaries. Unlike other ingest workflows, it:
+INGEST_CURATED captures external content [UserName] finds valuable while maintaining clear epistemic boundaries. Unlike other ingest workflows, it:
 1. **Requires** asking why (ingest reason is mandatory)
 2. Uses **External origin** attribution exclusively
 3. **Asks before** creating meta entries (not automatic)
 4. Stores in dedicated `raw/curated/` directory
-5. Maintains clear separation from your own thinking
+5. Maintains clear separation from [UserName]'s own thinking
 
-This workflow ensures you can curate interesting external content without conflating it with your own ideas.
+This workflow ensures [UserName] can curate interesting external content without conflating it with his own ideas.

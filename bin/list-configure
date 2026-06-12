@@ -51,10 +51,10 @@ echo ""
 
 # communication_style in knowledge_partner_profile.md
 echo -e "  ${CYAN}communication_style${NC}"
-echo "    File: context/knowledge_partner_profile.md"
+echo "    File: contracts/knowledge_partner_profile.md"
 echo "    Default: Precision over politeness, depth over warmth"
 echo "    Description: How your knowledge partner communicates"
-if grep -q 'CONFIGURE:communication_style' "$REPO_ROOT/context/knowledge_partner_profile.md" 2>/dev/null; then
+if grep -q 'CONFIGURE:communication_style' "$REPO_ROOT/contracts/knowledge_partner_profile.md" 2>/dev/null; then
     echo -e "    Status: ${GREEN}DEFAULT${NC}"
 else
     echo -e "    Status: ${GREEN}CONFIGURED${NC}"
@@ -70,8 +70,20 @@ TIMEZONE=$(grep "timezone:" "$REPO_ROOT/config/system.yml" | sed -E 's/.*timezon
 echo -e "    Status: ${GREEN}SET${NC} → $TIMEZONE"
 echo ""
 
+# domains in system.yml
+echo -e "  ${CYAN}domains${NC}"
+echo "    File: config/system.yml"
+echo "    Default: illustrative neutral domains matching the shipped examples"
+echo "    Description: tag→domain grouping for index/router.md (edit to fit your work)"
+if grep -q '^domains:' "$REPO_ROOT/config/system.yml" 2>/dev/null; then
+    echo -e "    Status: ${GREEN}SET${NC}"
+else
+    echo -e "    Status: ${YELLOW}USING SCRIPT DEFAULTS${NC}"
+fi
+echo ""
+
 echo -e "${BOLD}=== Token Locations ===${NC}"
 echo ""
-echo "All CONFIGURE references in the repository:"
-grep -rn "CONFIGURE" "$REPO_ROOT" --include="*.md" --include="*.yml" --include="*.yaml" 2>/dev/null | grep -v "node_modules" | grep -v ".git/" | grep -v "bin/list-configure" | grep -v "bin/validate-configure" | sed "s|$REPO_ROOT/||" | sed 's/^/  /' || echo "  (none found — all configured!)"
+echo "All CONFIGURE / [UserName] references in the repository:"
+grep -rnE "CONFIGURE|\[UserName\]" "$REPO_ROOT" --include="*.md" --include="*.yml" --include="*.yaml" 2>/dev/null | grep -v "node_modules" | grep -v ".git/" | grep -v "bin/list-configure" | grep -v "bin/validate-configure" | sed "s|$REPO_ROOT/||" | sed 's/^/  /' || echo "  (none found — all configured!)"
 echo ""

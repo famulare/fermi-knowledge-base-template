@@ -4,9 +4,11 @@
 
 # Model: Typhoid Dose-Response Immunity Cohort Model
 
-**Origin:** Mike
+**Origin:** [UserName]
 
 **Status:** Active
+
+**Tags:** immunology, dose-response
 
 ---
 
@@ -46,7 +48,7 @@ Core innovation: **dose-dependent immunity waning** where high pathogen doses ca
 
 ## Evidence Base
 
-- `raw/repos/2026-01-23_famulare_typhoid-immune-dynamics.md` - Repository ingest
+- `raw/repos/YYYY-MM-DD_author_typhoid-immune-dynamics.md` - Repository ingest
 - Bangladesh serosurvey data (Quadri 2021) - Titer distribution validation
 - WHO modeling consortium incidence archetypes - Calibration targets
 - Historical naive-adult challenge studies - Dose-response parameter bounds
@@ -70,9 +72,19 @@ Core innovation: **dose-dependent immunity waning** where high pathogen doses ca
 
 ---
 
+## Related
+
+**Implements:**
+- `model_continuous_immunity_framework.md` — This is a single-pathogen instance of that general dose-response/waning framework.
+
+**Supported by:**
+- `claim_immunity_continuous_spectrum.md` — Provides the conceptual claim this model operationalizes.
+
+---
+
 ## Provenance
 
 - **Created:** 2026-01-23
-- **Origin detail:** Ingested from Mike's GitHub repository (typhoid-immune-dynamics); active research project
+- **Origin detail:** Ingested from [UserName]'s GitHub repository (typhoid-immune-dynamics); active research project
 - **Change log:**
   - 2026-01-23: Created from GitHub repository ingest; proof-of-concept status

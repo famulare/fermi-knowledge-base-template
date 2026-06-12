@@ -8,17 +8,19 @@
 
 **Detected:** 2026-02-09
 
+**Tags:** infectious-disease, molecular-evolution
+
 ---
 
 ## Item A
 
 **Statement:** The historical rarity of cVDPV outbreaks is explained by high population immunity suppressing Sabin strain transmission, not by intrinsic biological attenuation. In populations with low immunity, R_Sabin approaches R_wild (R_Sabin ≈ 0.85 × R_wild).
 
-**Origin:** Mike, 2026-01-23
+**Origin:** [UserName], 2026-01-23
 
-**Source:** `meta/claims/2026-01-23_polio-cVDPV-rarity-population-immunity.md`
+**Source:** `meta/claims/YYYY-MM-DD_polio-cVDPV-rarity-population-immunity.md`
 
-**Raw evidence:** `raw/web/papers/2018-04-27_famulare_polio-eradication-stability.md`
+**Raw evidence:** `raw/web/papers/YYYY-MM-DD_author_polio-eradication-stability.md`
 
 ---
 
@@ -26,11 +28,11 @@
 
 **Statement:** Gatekeeper reversion is near-universal (92.4% of vaccinated naive individuals) but community establishment is stochastic — 39.6% of transmission simulations end in extinction. Sanitation level (not mutation rate) is the critical factor determining whether individual reversion becomes a population-level outbreak.
 
-**Origin:** Mike (Wong 2023) building on External (Valesano 2021), 2026-02-06
+**Origin:** [UserName] (Wong 2023) building on External (Valesano 2021), 2026-02-06
 
-**Source:** `meta/claims/2026-02-06_gatekeeper-reversion-universal-establishment-stochastic.md`
+**Source:** `meta/claims/YYYY-MM-DD_gatekeeper-reversion-universal-establishment-stochastic.md`
 
-**Raw evidence:** `raw/web/papers/2017-2023_famulare-senior-author-polio-program.md`
+**Raw evidence:** `raw/web/papers/YYYY-MM-DD_author_polio-program.md`
 
 ---
 
@@ -38,17 +40,17 @@
 
 **Statement:** Person-to-person transmission involves a bottleneck of ~2 viral genomes. This tight bottleneck means the binding constraint on cVDPV emergence is not within-host reversion but between-host propagation — whether reverted variants survive the stochastic filter of transmission.
 
-**Origin:** External (Valesano/Lauring) + Mike (interpretation), 2026-02-06
+**Origin:** External (Valesano/Lauring) + [UserName] (interpretation), 2026-02-06
 
-**Source:** `meta/claims/2026-02-06_transmission-bottleneck-2-genomes-rate-limiting.md`
+**Source:** `meta/claims/YYYY-MM-DD_transmission-bottleneck-2-genomes-rate-limiting.md`
 
-**Raw evidence:** `raw/web/papers/2017-2023_famulare-senior-author-polio-program.md`
+**Raw evidence:** `raw/web/papers/YYYY-MM-DD_author_polio-program.md`
 
 ---
 
 ## Nature of Tension
 
-All three claims are Mike's own work from different periods and publications. They are complementary — describing different filters in the path from OPV dose to cVDPV outbreak — but their framing of primacy is potentially contradictory:
+All three claims are [UserName]'s own work from different periods and publications. They are complementary — describing different filters in the path from OPV dose to cVDPV outbreak — but their framing of primacy is potentially contradictory:
 
 - **Item A** (2018 paper): Population immunity is the "primary" explanation for historical cVDPV rarity. The mechanism is suppression of Sabin R below 1 via herd immunity.
 - **Item B** (2023 paper): Sanitation level is "the critical factor." Even with near-universal reversion, community establishment is stochastic.
@@ -87,7 +89,7 @@ The tension: which filter matters most for intervention? If population immunity 
 
 **Rationale:** The three claims describe complementary filters operating at different scales (population, community, per-transmission-event). Their relative importance is regime-dependent: population immunity dominates pre-cessation; stochastic filters become rate-limiting when coverage gaps open. No single filter has primacy in general.
 
-**Result:** `meta/models/2026-02-09_cvdpv-emergence-multiscale-filter-chain.md`
+**Result:** `meta/models/YYYY-MM-DD_cvdpv-emergence-multiscale-filter-chain.md`
 
 **Resolved on:** 2026-02-09
 

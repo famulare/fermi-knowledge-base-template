@@ -15,21 +15,22 @@ This guide explains how to customize your Fermi Knowledge Base instance.
 
 ## Configuration Tokens
 
-All configurable values use `[CONFIGURE]` or `<!-- CONFIGURE:token_name -->` markers.
+All configurable values use `[CONFIGURE]` or `<!-- CONFIGURE:token_name -->` markers in config/contracts. In prose and example entries, the literal token `[UserName]` stands in for your configured name. The SETUP workflow replaces both `[CONFIGURE]` and `[UserName]` throughout the repo; `bin/validate-configure` reports any that remain.
 
 ### Required Configuration
 
 | Token | File | Description |
 |-------|------|-------------|
-| `user_name` | `config/system.yml`, `context/knowledge_partner_profile.md` | Your name (used in origin labels, commit messages) |
+| `user_name` | `config/system.yml`, `contracts/knowledge_partner_profile.md` | Your name (used in origin labels, commit messages) |
 
 ### Optional Configuration
 
 | Token | File | Default | Description |
 |-------|------|---------|-------------|
 | `persona_name` | `config/system.yml` | Fermi | Your knowledge partner's name |
-| `communication_style` | `context/knowledge_partner_profile.md` | Precision over politeness, depth over warmth | How Fermi communicates with you |
+| `communication_style` | `contracts/knowledge_partner_profile.md` | Precision over politeness, depth over warmth | How Fermi communicates with you |
 | `timezone` | `config/system.yml` | America/Los_Angeles | Your timezone |
+| `domains` | `config/system.yml` | illustrative neutral domains | Tag→domain grouping for `index/router.md` (consumed by `scripts/generate_router.py`; edit to fit your work) |
 
 ---
 

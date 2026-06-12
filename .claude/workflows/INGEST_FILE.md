@@ -2,7 +2,7 @@
 
 **Trigger:** User references file path, uploads file, or says "ingest this file"
 
-**Status:** Fully Implemented
+**Status:** Phase 5 - Fully Implemented
 
 ---
 
@@ -385,10 +385,14 @@ Provenance: `raw/provenance/YYYY-MM-DD_[filename].json`
 ```
 
 **Knowledge Map** (`views/persistent/knowledge_map.md`):
-Update if file import:
-- Opens new domain area
-- Adds significant evidence to existing domain
-- Provides key diagram or dataset
+(Optional — for narrative overview only; `index/router.md` is the primary navigation surface.)
+Update if file import opens a new domain area or adds significant evidence.
+
+**Regenerate Router:**
+After updating index files, regenerate the router to reflect changes:
+```bash
+uv run scripts/generate_router.py
+```
 
 ---
 
@@ -619,6 +623,22 @@ Citation: `raw/files/2026-01-22_experiment_results.csv`
 
 ---
 
+## Grouped Extraction Checklist
+
+When extracting multiple documents into a single file (e.g., a folder of PDFs grouped by theme or time period):
+
+1. **Hard boundaries:** Each source document gets its own clearly headed section. No narrative bridges that blur source boundaries.
+2. **Per-source attribution:** Every finding, number, and claim must be explicitly tagged to its source document within the file.
+3. **No cross-source inference in body:** Cross-document themes or synthesis belong in a clearly labeled "Cross-Document Themes" section at the end, not woven into individual source sections.
+4. **Conflation self-check:** After extraction, review each source section and ask: "Could any claim in this section actually belong to an adjacent source?" Pay special attention to:
+   - Geographic-specific results in multi-region collections
+   - Temporal data in sequential reports (estimates that evolved over time)
+   - Similar parameter names across related documents
+5. **Supersession notes:** When a later document revises an estimate from an earlier one, explicitly note the supersession.
+6. **Parameter provenance:** All quantitative values must include inline source annotation: `(source: page X / table Y / section Z of [document name])`.
+
+---
+
 ## Epistemic Discipline Checklist
 
 Before completing file import:
@@ -633,3 +653,6 @@ Before completing file import:
 - [ ] Non-trivial connections surfaced (if any)
 - [ ] Recent ingests updated
 - [ ] User receives clear summary of what was extracted
+- [ ] Raw purity: no forward-looking synthesis or editorial interpolation in extraction body
+- [ ] Parameter provenance: all quantitative values have inline source annotations
+- [ ] Grouped extraction: conflation self-check completed (if multiple sources)

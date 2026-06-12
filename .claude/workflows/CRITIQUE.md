@@ -307,8 +307,8 @@ validated mechanism.
 - Missing: How durability will be measured (supersession? contradiction rate?)
 
 **Alternative explanations for predicted effects:**
-- If durability patterns emerge, could be selection bias (user adopts ideas they
-  like regardless of origin) rather than origin causing durability
+- If durability patterns emerge, could be selection bias ([UserName] adopts ideas he
+  likes regardless of origin) rather than origin causing durability
 
 **Complexity:** Appropriate (three categories seems right, not overfitted)
 
@@ -525,7 +525,7 @@ Would you like me to:
 
 ### Track Critique Patterns
 
-In `learning/connection_feedback.md` or similar, note:
+When patterns emerge, note in relevant meta entries:
 
 ```markdown
 ## Critique Patterns

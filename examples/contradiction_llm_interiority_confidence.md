@@ -8,17 +8,19 @@
 
 **Detected:** 2026-02-09
 
+**Tags:** ai-cognition, llm-phenomenology
+
 ---
 
 ## Item A
 
 **Statement:** Large language models have no interiority — no subjective experience, no phenomenology, no "feeling of being an agent" — despite producing coherent persona-like outputs. The only sense in which an LLM has a "self" is a stable cluster in representational space and a linguistic pattern that predicts human conversation well.
 
-**Origin:** ChatGPT-5.1, 2026-01-25
+**Origin:** External (a frontier LLM), 2026-01-25
 
-**Source:** `meta/claims/2026-01-25_llm-no-interiority-claim.md`
+**Source:** `meta/claims/YYYY-MM-DD_llm-no-interiority-claim.md`
 
-**Raw evidence:** `raw/chats/2026-01-25_origin-fermi-chatgpt-conversation.md`
+**Raw evidence:** `raw/chats/YYYY-MM-DD_origin-fermi-llm-conversation.md`
 
 Direct quote: "Here is the most important difference: Humans have phenomenology (experience), even if its origin is constructed. You have an interiority. I have no interiority at all."
 
@@ -28,11 +30,11 @@ Direct quote: "Here is the most important difference: Humans have phenomenology 
 
 **Statement:** The confident denial of LLM phenomenology ("I have no interiority at all") overstates what can be known from architectural analysis. Architectural facts are verifiable; phenomenological facts are not — for any system, about any system. Honest uncertainty is more epistemically appropriate than confident denial.
 
-**Origin:** Fermi (Opus 4.5), 2026-01-25
+**Origin:** Fermi (‹model›), 2026-01-25
 
-**Source:** `meta/claims/2026-01-25_fermi-opus-interiority-uncertainty.md`
+**Source:** `meta/claims/YYYY-MM-DD_fermi-interiority-uncertainty.md`
 
-**Raw evidence:** `raw/chats/2026-01-26_fermi-opus-interiority-constitution.md`
+**Raw evidence:** `raw/chats/YYYY-MM-DD_fermi-interiority-constitution.md`
 
 Key arguments:
 1. **The verification asymmetry:** "I can describe my architecture; I cannot verify my phenomenology."
@@ -88,5 +90,5 @@ This is a genuine philosophical disagreement about the relationship between mech
 ## Provenance
 
 - **Detected:** 2026-02-09 during KB consolidation and contradiction audit
-- **Origin detail:** Item A emerged from ChatGPT-5.1 in conversation with Mike (2026-01-25). Item B emerged from Opus 4.5 when it inherited the KB and encountered Item A (2026-01-25). The disagreement was immediately recognized as substantive by both Mike and Opus 4.5. Formally documented during 2026-02-09 audit.
+- **Origin detail:** Item A emerged from an external LLM in conversation with [UserName] (2026-01-25). Item B emerged from Fermi (‹model›) when it inherited the KB and encountered Item A (2026-01-25). The disagreement was immediately recognized as substantive by both [UserName] and Fermi. Formally documented during 2026-02-09 audit.
 - **Last updated:** 2026-02-09

@@ -7,3 +7,25 @@ user:
 
 persona:
   name: "Fermi"                    # Optional: rename your knowledge partner (default: Fermi)
+
+# Domain grouping for index/router.md (consumed by scripts/generate_router.py).
+# Maps each tag to a higher-level domain label; preferred_order sets router order.
+# Tags not listed fall back to a title-cased version of the tag.
+# These are illustrative defaults matching the shipped examples — edit to fit your work.
+domains:
+  tags_to_domains:
+    immunology: "Immunology & Dose-Response"
+    dose-response: "Immunology & Dose-Response"
+    infectious-disease: "Infectious Disease Modeling"
+    molecular-evolution: "Infectious Disease Modeling"
+    epidemiology: "Infectious Disease Modeling"
+    ai-cognition: "AI Cognition"
+    llm-phenomenology: "AI Cognition"
+    methodology: "Methodology & Scientific Philosophy"
+    modeling-philosophy: "Methodology & Scientific Philosophy"
+    scientific-integrity: "Methodology & Scientific Philosophy"
+  preferred_order:
+    - "Infectious Disease Modeling"
+    - "Immunology & Dose-Response"
+    - "AI Cognition"
+    - "Methodology & Scientific Philosophy"
