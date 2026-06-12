@@ -29,3 +29,13 @@ domains:
     - "Immunology & Dose-Response"
     - "AI Cognition"
     - "Methodology & Scientific Philosophy"
+
+# Recognized model names for the INFO-level origin check in scripts/kb_audit.py.
+# The ‹model› placeholder is always accepted; edit this list to match the models you use.
+known_models:
+  - "Opus 4.5"
+  - "Sonnet 4.5"
+  - "Haiku 4.5"
+  - "GPT-5"
+  - "ChatGPT"
+  - "Claude 3.5 Sonnet"

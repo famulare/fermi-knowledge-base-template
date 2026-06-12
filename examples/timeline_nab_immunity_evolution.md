@@ -1,6 +1,6 @@
-> **Note:** This is a real example from a working Fermi knowledge base instance.
-> It demonstrates the format and epistemic discipline of the system.
-> Your KB entries will reflect your own domain and interests.
+> **Note:** An illustrative example showing the entry format and epistemic discipline.
+> Identity and file paths are genericized; the scientific content and citations are real.
+> Your own entries will reflect your domain and interests.
 
 # Timeline: NAb Immunity Theory Evolution
 

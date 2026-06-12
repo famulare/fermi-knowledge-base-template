@@ -489,7 +489,10 @@ def check_crossrefs(
 # C. Origin attribution consistency
 # ---------------------------------------------------------------------------
 
-KNOWN_MODEL_NAMES = {
+# Recognized model names for the INFO-level origin check. Read from
+# config/system.yml (`known_models`) when present; the ‹model› placeholder is
+# always accepted so genericized template content does not flag.
+_DEFAULT_KNOWN_MODELS = {
     "Opus 4.5", "Opus 4.6",
     "Sonnet 4.5", "Sonnet 4.6",
     "Haiku 4.5",
@@ -499,8 +502,26 @@ KNOWN_MODEL_NAMES = {
 }
 
 
+def get_known_models(repo_root: Path) -> set[str]:
+    """Recognized model names from config/system.yml, plus the ‹model› placeholder."""
+    models: set[str] = set()
+    config_file = repo_root / "config" / "system.yml"
+    if config_file.exists():
+        try:
+            import yaml
+
+            with open(config_file, encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+            models = {str(m) for m in (data.get("known_models") or [])}
+        except Exception:
+            models = set()
+    models = models or set(_DEFAULT_KNOWN_MODELS)
+    models.add("‹model›")
+    return models
+
+
 def check_origin_consistency(
-    rel_path: str, text: str, findings: list[Finding]
+    rel_path: str, text: str, findings: list[Finding], repo_root: Path
 ) -> None:
     """Check origin attribution for consistency issues."""
     fields = extract_fields(text)
@@ -509,11 +530,13 @@ def check_origin_consistency(
     if not origin_val:
         return
 
+    known = get_known_models(repo_root)
+
     # Check for Fermi origin with unrecognized model name
     fermi_match = re.match(r"Fermi\s*\((.+)\)", origin_val)
     if fermi_match:
         model = fermi_match.group(1).strip()
-        if model not in KNOWN_MODEL_NAMES:
+        if model not in known:
             findings.append(Finding(
                 "INFO", "origin", rel_path,
                 f"Fermi origin with unrecognized model: '{model}'",
@@ -524,7 +547,7 @@ def check_origin_consistency(
     cocreated_match = re.match(r"Co-created\s*\(.+Fermi\s*\((.+?)\).*\)", origin_val)
     if cocreated_match:
         model = cocreated_match.group(1).strip()
-        if model not in KNOWN_MODEL_NAMES:
+        if model not in known:
             findings.append(Finding(
                 "INFO", "origin", rel_path,
                 f"Co-created Fermi model unrecognized: '{model}'",
@@ -783,7 +806,7 @@ def run_audit(repo_root: Path) -> list[Finding]:
 
         # C. Origin consistency (meta/ only)
         if rel_path.startswith("meta/"):
-            check_origin_consistency(rel_path, text, findings)
+            check_origin_consistency(rel_path, text, findings, repo_root)
 
         # D. Status-evidence signals (meta/ only)
         check_status_evidence(rel_path, text, repo_root, findings)
