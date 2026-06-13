@@ -154,8 +154,11 @@ the structural checks in `scripts/kb_audit.py`).
   `examples` to a first-class value.
 - **Known lossy points** (declared, not hidden): sub-document epistemic typing
   (evidence/inference/interpolation *within* a concept) and per-edge rationale prose are not
-  expressible in frontmatter/link-title and remain in the body. The validator/export print the
-  declared-dropped set rather than silently losing it.
+  expressible in frontmatter/link-title and remain in the body; cross-refs to targets outside
+  the exported set stay as inline code spans (broken-link-tolerant, not OKF links); and
+  Evidence-section cross-refs render as *untyped* links (the inbound *supports* relation has no
+  clean outbound verb from the citing concept). The validator/export print the declared-dropped
+  set rather than silently losing it.
 - **Submission form**: contribute as a formal OKF extension (lives in their governance) vs. an
   independent profile that targets OKF conformance. Default: offer it; let the maintainers
   decide where it lives.
