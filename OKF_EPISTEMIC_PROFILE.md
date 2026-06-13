@@ -1,6 +1,8 @@
 # OKF Epistemic Profile (v0.1-draft)
 
-**Status:** Draft — awaiting review/lock. Not yet submitted upstream.
+**Status:** **Locked** for implementation (2026-06-13). This spec is the build target for the
+reference bridge; any change requires a named re-lock (planned after the Gate 1 round-trip
+test). Not yet submitted upstream.
 **Extends:** Open Knowledge Format **v0.1** — `GoogleCloudPlatform/knowledge-catalog`
 @ `ee67a5ca27044ebe7c38385f5b6cffc2305a9c1a` (the spec this profile pins to).
 **Relationship to OKF:** a strict, fully **back-compatible overlay**. Every addition below is
