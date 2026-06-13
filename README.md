@@ -126,13 +126,15 @@ The SETUP workflow configures your name, timezone, and persona preferences. All 
 |-----------|---------|
 | `raw/` | Preserved inputs: chats, notes, files, curated content, provenance records |
 | `meta/` | Interpretive structure: maps, models, claims, contradictions, timelines |
-| `index/` | Retrieval infrastructure: router (always-loaded domain map), retrieval recipe, tags, entities, link graph, glossary |
+| `index/` | Retrieval infrastructure: router (always-loaded domain map), retrieval recipe, tags, entities, edge-verb registry, generated link graph, glossary |
 | `views/` | Navigation aids: recent ingests, query results, suggested reads |
 | `contracts/` | System contracts: persona profile, KB spec, configuration guide |
 | `config/` | User configuration |
-| `scripts/` | Infrastructure: router generator, full-text search, structural audit (run with `uv`) |
+| `scripts/` | Infrastructure: router generator, hybrid search, knowledge-graph builder, structural audit (run with `uv`) |
 | `special_projects/` | Bounded work with its own structure (retrospectives, sprints, analyses) |
 | `examples/` | Curated example entries demonstrating each meta type |
+
+**Search & graph.** Retrieval is hybrid — FTS5 keyword + entity-match fused by reciprocal rank — and degrades gracefully to keyword-only with zero extra setup. Optional **semantic search** (local embeddings via llama.cpp) lives on a separate branch, for a recall boost when you want it. A **knowledge graph** is generated from each entry's `## Related` / `## Evidence` sections (`scripts/kb_graph.py`: typed edges across 7 relation classes, plus `neighbors` / `path` / `subgraph` queries and `--expand` in search). Entries that record a modeling judgment can carry optional `Reduction question (O)` + `Boundary` fields — capturing *which detail a model keeps vs. ignores, and where that judgment breaks* (see the `modeling-judgment` examples).
 
 ## Deeper Reading
 

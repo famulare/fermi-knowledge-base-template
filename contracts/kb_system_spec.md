@@ -1,7 +1,7 @@
 # Knowledge Base System Specification
 **System:** KB (local-first, markdown-native)
 **Persona:** Fermi
-**Status:** v1.1 (TEMPLATE)
+**Status:** v1.2 (TEMPLATE)
 **Constraint:** Local-first; markdown + git, no external service dependencies
 
 ---
@@ -125,6 +125,14 @@ The system uses a **retrieval-gated architecture** to scale beyond context-windo
 - `scripts/kb_audit.py` validates structural compliance, cross-references, origin attribution, and URL/DOI patterns.
 
 **Key invariant:** Markdown remains the canonical source of truth. The SQLite database (`index/kb_index.db`) and generated router are disposable derived artifacts, fully rebuildable from the markdown corpus.
+
+---
+
+## 2.3 Knowledge Graph & Modeling-Judgment
+
+- **Hybrid retrieval.** `kb_search` fuses FTS5 keyword + entity-match via reciprocal-rank fusion, with `--scope {knowledge,projects,all}` (default `knowledge` = raw+meta; `special_projects`/`views` are workshop/derived). Optional semantic embeddings (local llama.cpp, on a separate branch) layer in when available and **degrade gracefully** to keyword+entity when not.
+- **Knowledge graph.** `scripts/kb_graph.py` builds a typed entry↔entry graph from the `## Related` / `## Tensions/Coexistence` / `## Connections` / `## Evidence` sections (7 edge classes; per-verb directionality via `index/edge_verbs.md`). Edges also populate `kb_index.db` for retrieval `--expand`; `index/link_graph.md` and `index/graph.json` are derived, regenerable views. `kb_audit` adds graph checks (dangling edges, unmapped verbs, evidence-link coverage — a worklist, not a confabulation verdict).
+- **Modeling-judgment fields.** Entries whose core content is a keep/ignore judgment may carry optional `**Reduction question (O):**` + `**Boundary:**` fields and the `modeling-judgment` tag; `scripts/generate_modeling_judgment_index.py` emits a co-location index.
 
 ---
 
@@ -374,6 +382,8 @@ All meta-layer artifacts must include a `**Status:**` field with a single canoni
 ## Version History
 
 This contract is the template's own lineage, generalized from a working knowledge base instance.
+
+**v1.2 (TEMPLATE):** Hybrid search (keyword+entity; semantic optional via the llama.cpp branch), knowledge graph (`kb_graph` + `edge_verbs` + link-graph view + `--expand`), modeling-judgment `Reduction question (O)`/`Boundary` fields, `--scope`, router Infrastructure & Governance section, `kb_audit` graph checks. Ported from the working instance's graph generation.
 
 **v1.1 (TEMPLATE):** Generalized from working instance v1.5.
 - Section 2.2: Retrieval architecture (router, search CLI, audit)
