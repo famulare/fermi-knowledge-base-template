@@ -5,6 +5,10 @@
 **Tags:** methodology, modeling-philosophy
 **Created / Resolved:** same session
 
+**Reduction question (O):** How much mechanistic complexity should a scenario-projection model of a non-factorizable system carry?
+
+**Boundary:** There is no fixed safe complexity level — the calibrate-predict-compare selection function is the boundary; intermediate models chosen by convention fall into the valley.
+
 ---
 
 ## Tension
@@ -32,3 +36,10 @@ The claims are **not contradictory**. The RG framework *subsumes* the uncanny-va
 ## What this example demonstrates
 
 A **resolved** contradiction (contrast with a *coexisting* one, where two views are carried unreconciled). The entry states each item in its own terms, names the apparent conflict precisely, and resolves it by showing one frame *subsumes* the other rather than defeating it — the more common and more useful outcome than "one side wins." Note the origin is `Co-created`: the tension and its resolution emerged in dialogue.
+
+---
+
+## Related
+
+**related-to:**
+- `examples/model_continuous_immunity_framework.md` — choosing representation granularity for a coupled system

@@ -5,6 +5,10 @@
 **Tags:** immunology, dose-response
 **Source:** a presentation on better defaults for immunity modeling
 
+**Reduction question (O):** Can one cross-pathogen framework capture immunity dynamics — and which details can be dropped?
+
+**Boundary:** Holds where protection is a continuous function of titer × dose with power-law waning; breaks where immunity is effectively all-or-nothing.
+
 ---
 
 ## Overview
@@ -121,3 +125,13 @@ Applies to duration and concentration excreted. VE for transmission depends on i
 ## What this example demonstrates
 
 A **model** entry at framework altitude: it states scope and applicability boundaries, lays out mechanism as explicit equations, names the key inferential consequences (e.g. R0–VE inverse correlation), and separates assumptions from limitations. Note that specific instance-models (a typhoid dose-response model, a multiscale transmission model) would each cite this framework as the general structure they implement — a meta-layer "umbrella" with instances beneath it.
+
+---
+
+## Related
+
+**generalizes:**
+- `examples/model_typhoid_dose_response.md` — typhoid is one instantiation of the general framework
+
+**shared-framework:**
+- `examples/claim_immunity_continuous_spectrum.md` — same continuous-immunity premise

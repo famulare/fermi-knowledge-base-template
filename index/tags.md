@@ -63,6 +63,15 @@ Each file is grouped into a router domain by the domain of its **first** matchin
 **Files:**
 - examples/map_methodological_fingerprint.md
 
+### modeling-judgment
+**Type:** Mechanism/Pattern
+**Description:** Entries whose core content is a relevance judgment — which detail to keep vs ignore for a given question, and the regime where it holds or breaks. Spans claims, models, and contradictions.
+**Files:**
+- examples/model_typhoid_dose_response.md
+- examples/claim_immunity_continuous_spectrum.md
+- examples/model_continuous_immunity_framework.md
+- examples/contradiction_uncanny_valley_coarse_graining.md
+
 ---
 
 **Last updated:** 2026-06-11

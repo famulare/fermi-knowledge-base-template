@@ -2,6 +2,10 @@
 
 **Status:** [Open | Resolved | Coexisting]
 
+<!-- OPTIONAL — include the next two fields for entries whose core content is a modeling/analysis judgment (then also add the file to the `modeling-judgment` tag in index/tags.md): -->
+<!-- **Reduction question (O):** the question this keep/ignore judgment is relative to -->
+<!-- **Boundary:** the regime where the judgment holds; the condition/parameter where it BREAKS. If genuinely uncharacterized, write: [gap: boundary not stated] -->
+
 **Detected:** YYYY-MM-DD
 
 ---

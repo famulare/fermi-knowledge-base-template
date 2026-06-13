@@ -12,6 +12,10 @@
 
 **Tags:** immunology, dose-response
 
+**Reduction question (O):** How should immunity be represented in transmission / vaccine-efficacy models?
+
+**Boundary:** Continuous representation is load-bearing for high-dose or rapidly-waning settings; binary approximation may suffice only in low-dose, slow-waning regimes.
+
 ---
 
 ## Evidence
@@ -52,6 +56,9 @@ Primary sources that support this claim:
 **Challenges:**
 - Standard SIR/SIRS compartmental models treating immunity as binary state transitions
 - Fixed vaccine efficacy models assuming protection is intrinsic vaccine property
+
+**exemplified-by:**
+- `examples/model_typhoid_dose_response.md` — concrete dose-response instantiation
 
 ---
 

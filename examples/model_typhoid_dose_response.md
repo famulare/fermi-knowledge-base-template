@@ -10,6 +10,10 @@
 
 **Tags:** immunology, dose-response
 
+**Reduction question (O):** How does vaccine efficacy vary across transmission settings, and what must a dose-response model represent to capture it?
+
+**Boundary:** Holds where typical exposure dose varies across settings (dose-dependent protection); collapses to a fixed-efficacy model where exposure is uniform.
+
 ---
 
 ## Summary
@@ -79,6 +83,9 @@ Core innovation: **dose-dependent immunity waning** where high pathogen doses ca
 
 **Supported by:**
 - `claim_immunity_continuous_spectrum.md` — Provides the conceptual claim this model operationalizes.
+
+**demonstrates:**
+- `examples/claim_immunity_continuous_spectrum.md` — the dose-response cohort model is a concrete instance of continuous immunity
 
 ---
 
