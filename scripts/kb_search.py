@@ -9,7 +9,7 @@ markdown corpus. Markdown is the canonical source of truth.
 
 Usage:
     uv run scripts/kb_search.py rebuild                      # Full rebuild
-    uv run scripts/kb_search.py search "dose response model"  # Search
+    uv run scripts/kb_search.py search "dose response immunity"  # Search
     uv run scripts/kb_search.py search "query" --layer meta   # Filter by layer
     uv run scripts/kb_search.py read 42                       # Read chunk by ID
     uv run scripts/kb_search.py status                        # DB stats + staleness
@@ -25,6 +25,15 @@ import sys
 import textwrap
 from datetime import datetime, timedelta
 from pathlib import Path
+
+# Optional embedding acceleration (F2). Graceful if numpy / endpoint unavailable.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+try:
+    import numpy as np
+    import kb_embed
+    _EMBED_OK = True
+except Exception:
+    _EMBED_OK = False
 
 # Directories to index
 CONTENT_DIRS = [
@@ -68,6 +77,9 @@ def create_schema(conn: sqlite3.Connection):
         DROP TABLE IF EXISTS chunks_fts;
         DROP TABLE IF EXISTS chunks;
         DROP TABLE IF EXISTS rebuild_meta;
+        DROP TABLE IF EXISTS entities;
+        DROP TABLE IF EXISTS file_entities;
+        DROP TABLE IF EXISTS edges;
 
         CREATE TABLE chunks (
             chunk_id     INTEGER PRIMARY KEY,
@@ -83,7 +95,8 @@ def create_schema(conn: sqlite3.Connection):
             origin       TEXT,
             status       TEXT,
             date         TEXT,
-            file_size    INTEGER NOT NULL
+            file_size    INTEGER NOT NULL,
+            embedding    BLOB
         );
 
         CREATE VIRTUAL TABLE chunks_fts USING fts5(
@@ -99,6 +112,33 @@ def create_schema(conn: sqlite3.Connection):
             key   TEXT PRIMARY KEY,
             value TEXT
         );
+
+        CREATE TABLE entities (
+            entity_id INTEGER PRIMARY KEY,
+            name      TEXT NOT NULL,
+            aliases   TEXT
+        );
+
+        CREATE TABLE file_entities (
+            file_path TEXT NOT NULL,
+            entity_id INTEGER NOT NULL
+        );
+        CREATE INDEX idx_file_entities_entity ON file_entities(entity_id);
+        CREATE INDEX idx_file_entities_path ON file_entities(file_path);
+
+        CREATE TABLE edges (
+            src       TEXT NOT NULL,
+            dst       TEXT NOT NULL,
+            cls       TEXT,
+            verb      TEXT NOT NULL,
+            directed  INTEGER,
+            rationale TEXT,
+            section   TEXT
+        );
+        CREATE INDEX idx_edges_src ON edges(src);
+        CREATE INDEX idx_edges_dst ON edges(dst);
+        CREATE INDEX idx_edges_cls ON edges(cls);
+        CREATE UNIQUE INDEX idx_edges_uniq ON edges(src, dst, verb);
     """
     )
 
@@ -413,6 +453,134 @@ def _index_files(conn: sqlite3.Connection, md_files: list[Path], repo_root: Path
     return total_files, total_chunks
 
 
+# --- Entity index (F3) + embeddings (F2) ---
+
+
+def parse_entities(repo_root: Path) -> list[dict]:
+    """Parse index/entities.md into [{name, aliases:[...], files:[...]}]."""
+    path = repo_root / "index" / "entities.md"
+    if not path.exists():
+        return []
+    entities: list[dict] = []
+    cur: dict | None = None
+    in_occ = False
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        s = raw_line.strip()
+        m = re.match(r"^###\s+(.+)$", s)
+        if m:
+            if cur:
+                entities.append(cur)
+            cur = {"name": m.group(1).strip(), "aliases": [], "files": []}
+            in_occ = False
+            continue
+        if cur is None:
+            continue
+        if s.startswith("**Aliases:**"):
+            al = s.replace("**Aliases:**", "").strip()
+            cur["aliases"] = [a.strip() for a in re.split(r"[;,]", al) if a.strip()]
+            in_occ = False
+        elif s.startswith("**Occurrences:**"):
+            in_occ = True
+        elif s.startswith("**"):
+            in_occ = False
+        elif in_occ:
+            fm = re.match(r"^-\s+(\S+\.md)", s)
+            if fm:
+                cur["files"].append(fm.group(1))
+    if cur:
+        entities.append(cur)
+    return entities
+
+
+def _build_entity_index(conn: sqlite3.Connection, repo_root: Path) -> int:
+    """Regenerate entities + file_entities tables from index/entities.md."""
+    conn.execute("DELETE FROM entities")
+    conn.execute("DELETE FROM file_entities")
+    ents = parse_entities(repo_root)
+    for e in ents:
+        cur = conn.execute(
+            "INSERT INTO entities (name, aliases) VALUES (?, ?)",
+            (e["name"], "; ".join(e["aliases"])),
+        )
+        eid = cur.lastrowid
+        for f in e["files"]:
+            conn.execute(
+                "INSERT INTO file_entities (file_path, entity_id) VALUES (?, ?)",
+                (f, eid),
+            )
+    return len(ents)
+
+
+def _embed_pending(conn: sqlite3.Connection, repo_root: Path, verbose: bool = True) -> int:
+    """Fill embeddings for chunks where embedding IS NULL. Best-effort (degrades silently)."""
+    if not _EMBED_OK:
+        return 0
+    rows = conn.execute(
+        "SELECT chunk_id, heading, content FROM chunks WHERE embedding IS NULL"
+    ).fetchall()
+    if not rows:
+        return 0
+    if not kb_embed.available():
+        if verbose:
+            print("  embeddings: skipped (no local endpoint; keyword-only search still works)")
+        return 0
+    proc = kb_embed.ensure_server()
+    try:
+        ids = [r[0] for r in rows]
+        texts = [((r[1] or "") + "\n" + (r[2] or "")) for r in rows]
+        vecs = kb_embed.embed_texts(texts)
+        if vecs is None:
+            if verbose:
+                print("  embeddings: endpoint unavailable; keyword-only search still works")
+            return 0
+        for cid, v in zip(ids, vecs):
+            conn.execute(
+                "UPDATE chunks SET embedding = ? WHERE chunk_id = ?", (v.tobytes(), cid)
+            )
+        conn.commit()
+        if verbose:
+            print(f"  embeddings: {len(vecs)} chunks embedded ({kb_embed.MODEL_HF}, dim {kb_embed.DIM})")
+        return len(vecs)
+    finally:
+        kb_embed.stop_server(proc)
+
+
+def _build_edge_index(conn: sqlite3.Connection, repo_root: Path) -> int:
+    """Populate the knowledge-graph edges table from markdown (kb_graph.collect_edges).
+    Same extractor as kb_graph, so DB edges == graph.json edges by construction. The
+    CREATE-IF-NOT-EXISTS keeps the incremental path safe; the table is always fully rebuilt."""
+    import kb_graph
+    conn.executescript(
+        "CREATE TABLE IF NOT EXISTS edges (src TEXT NOT NULL, dst TEXT NOT NULL, cls TEXT, "
+        "verb TEXT NOT NULL, directed INTEGER, rationale TEXT, section TEXT);"
+        "CREATE INDEX IF NOT EXISTS idx_edges_src ON edges(src);"
+        "CREATE INDEX IF NOT EXISTS idx_edges_dst ON edges(dst);"
+        "CREATE INDEX IF NOT EXISTS idx_edges_cls ON edges(cls);"
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_edges_uniq ON edges(src, dst, verb);"
+    )
+    conn.execute("DELETE FROM edges")
+    edges = kb_graph.collect_edges(repo_root)
+    conn.executemany(
+        "INSERT OR IGNORE INTO edges (src, dst, cls, verb, directed, rationale, section) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [(e["src"], e["dst"], e["cls"], e["verb"], int(bool(e.get("directed"))),
+          e.get("rationale", ""), e.get("section", "")) for e in edges],
+    )
+    return len(edges)
+
+
+def _post_index(conn: sqlite3.Connection, repo_root: Path) -> None:
+    """After (re)indexing: rebuild the entity index, knowledge-graph edges, and embeddings."""
+    n_ents = _build_entity_index(conn, repo_root)
+    if n_ents:
+        print(f"  entities: {n_ents} indexed from index/entities.md")
+    n_edges = _build_edge_index(conn, repo_root)
+    if n_edges:
+        print(f"  edges: {n_edges} indexed (knowledge graph)")
+    _embed_pending(conn, repo_root)
+    conn.commit()
+
+
 def _collect_corpus_files(repo_root: Path) -> list[Path]:
     """Collect all markdown files in content directories."""
     files = []
@@ -421,7 +589,7 @@ def _collect_corpus_files(repo_root: Path) -> list[Path]:
         if not dir_path.exists():
             continue
         for md_file in sorted(dir_path.rglob("*.md")):
-            if any(part.startswith((".", "_")) for part in md_file.parts):
+            if any(part.startswith(".") for part in md_file.parts):
                 continue
             files.append(md_file)
     return files
@@ -451,6 +619,9 @@ def cmd_rebuild(args):
         FROM chunks
     """
     )
+
+    # Entity index (F3) + embeddings (F2)
+    _post_index(conn, repo_root)
 
     # Record rebuild timestamp
     conn.execute(
@@ -489,6 +660,7 @@ def _cmd_rebuild_incremental(repo_root: Path, db_path: Path):
             FROM chunks
         """
         )
+        _post_index(conn2, repo_root)
         conn2.execute(
             "INSERT OR REPLACE INTO rebuild_meta (key, value) VALUES ('rebuilt_at', ?)",
             (datetime.now().isoformat(),),
@@ -567,6 +739,9 @@ def _cmd_rebuild_incremental(repo_root: Path, db_path: Path):
             [str(f.relative_to(repo_root)) for f in files_to_index],
         )
 
+    # Entity index (F3) + embeddings (F2)
+    _post_index(conn, repo_root)
+
     # Update rebuild timestamp
     conn.execute(
         "INSERT OR REPLACE INTO rebuild_meta (key, value) VALUES ('rebuilt_at', ?)",
@@ -579,6 +754,180 @@ def _cmd_rebuild_incremental(repo_root: Path, db_path: Path):
     print(f"Incremental rebuild of {db_path.relative_to(repo_root)}")
     print(f"  Updated: {len(stale_files)} stale, {len(new_files)} new, {len(deleted_paths)} deleted")
     print(f"  Re-indexed: {reindexed} files, {new_chunks} chunks")
+
+
+# --- Hybrid retrieval (F2+F3): keyword (FTS5) + semantic (embeddings) + entity, fused via RRF ---
+
+
+def _fts_match_ids(conn, fts_query: str, layers, k: int) -> list[int]:
+    where = ""
+    extra: list = []
+    if layers:
+        ph = ",".join("?" for _ in layers)
+        where = f"AND c.layer IN ({ph})"
+        extra = list(layers)
+    sql = f"""
+        SELECT c.chunk_id FROM chunks_fts
+        JOIN chunks c ON chunks_fts.rowid = c.chunk_id
+        WHERE chunks_fts MATCH ? {where}
+        ORDER BY rank LIMIT ?
+    """
+    params: list = [fts_query] + extra + [k]
+    try:
+        return [r[0] for r in conn.execute(sql, params).fetchall()]
+    except sqlite3.OperationalError:
+        return []
+
+
+def _vector_ids(conn, qvec, layers, k: int) -> list[int]:
+    where = "WHERE embedding IS NOT NULL"
+    params: list = []
+    if layers:
+        ph = ",".join("?" for _ in layers)
+        where += f" AND layer IN ({ph})"
+        params += list(layers)
+    rows = conn.execute(f"SELECT chunk_id, embedding FROM chunks {where}", params).fetchall()
+    if not rows:
+        return []
+    ids = [r[0] for r in rows]
+    mat = np.vstack([np.frombuffer(r[1], dtype=np.float32) for r in rows])
+    norms = np.linalg.norm(mat, axis=1, keepdims=True)
+    norms[norms == 0] = 1.0
+    sims = (mat / norms) @ qvec
+    order = np.argsort(-sims)[:k]
+    return [ids[int(i)] for i in order]
+
+
+def _entity_ids(conn, query: str, layers, k: int) -> list[int]:
+    qlow = query.lower()
+    matched: list[int] = []
+    for eid, name, aliases in conn.execute(
+        "SELECT entity_id, name, aliases FROM entities"
+    ).fetchall():
+        names = [name] + ((aliases or "").split(";"))
+        if any(len(n.strip()) >= 3 and n.strip().lower() in qlow for n in names):
+            matched.append(eid)
+    if not matched:
+        return []
+    qmarks = ",".join("?" for _ in matched)
+    where = ""
+    extra: list = []
+    if layers:
+        ph = ",".join("?" for _ in layers)
+        where = f"AND c.layer IN ({ph})"
+        extra = list(layers)
+    sql = f"""
+        SELECT c.chunk_id, COUNT(DISTINCT fe.entity_id) AS hits
+        FROM file_entities fe
+        JOIN chunks c ON c.file_path = fe.file_path
+        WHERE fe.entity_id IN ({qmarks}) {where}
+        GROUP BY c.chunk_id
+        ORDER BY hits DESC LIMIT ?
+    """
+    params: list = matched + extra + [k]
+    return [r[0] for r in conn.execute(sql, params).fetchall()]
+
+
+def _resolve_layers(args) -> list[str] | None:
+    """Layers to search. An explicit --layer wins; otherwise --scope maps to a set:
+    knowledge = raw+meta (default); projects = special_projects; all = no filter (None).
+    special_projects (workshop) and views (derived) are excluded from knowledge queries."""
+    if getattr(args, "layer", None):
+        return [args.layer]
+    scope = getattr(args, "scope", "knowledge")
+    if scope == "all":
+        return None
+    if scope == "projects":
+        return ["special_projects"]
+    return ["raw", "meta"]
+
+
+def _rrf(lists, k: int = 60) -> list[int]:
+    scores: dict = {}
+    for lst in lists:
+        for rank, cid in enumerate(lst):
+            scores[cid] = scores.get(cid, 0.0) + 1.0 / (k + rank)
+    return sorted(scores, key=lambda c: scores[c], reverse=True)
+
+
+def _search_advanced(conn, args, mode: str) -> bool:
+    """Hybrid/semantic retrieval via RRF. Returns True if it produced output, else False to fall through to keyword."""
+    layers = _resolve_layers(args)
+    pool = 60
+    qvec = kb_embed.embed_query(args.query) if _EMBED_OK else None
+    lists: list[list[int]] = []
+    if mode == "hybrid":
+        fts_q = re.sub(r"[^\w\s]", " ", args.query).strip()
+        if fts_q:
+            lists.append(_fts_match_ids(conn, fts_q, layers, pool))
+        lists.append(_entity_ids(conn, args.query, layers, pool))
+    if qvec is not None:
+        lists.append(_vector_ids(conn, qvec, layers, pool))
+    elif mode == "semantic":
+        return False  # no vectors available → let keyword path handle it
+    lists = [lst for lst in lists if lst]
+    if not lists:
+        return False
+    fused = _rrf(lists)[: args.top]
+    if not fused:
+        return False
+    qmarks = ",".join("?" for _ in fused)
+    rows = {
+        r["chunk_id"]: r
+        for r in conn.execute(
+            f"SELECT * FROM chunks WHERE chunk_id IN ({qmarks})", fused
+        ).fetchall()
+    }
+    label = "hybrid (keyword+semantic+entity)" if mode == "hybrid" else "semantic"
+    scope_note = f"layer={args.layer}" if getattr(args, "layer", None) else f"scope={getattr(args, 'scope', 'knowledge')}"
+    print(f'Found {len(fused)} results for "{args.query}" [{label} · {scope_note}]:')
+    print()
+    for i, cid in enumerate(fused, 1):
+        row = rows.get(cid)
+        if row is None:
+            continue
+        section = ""
+        if row["heading"]:
+            section = f'Section: "{row["heading"]}" '
+        section += f'(lines {row["line_start"]}-{row["line_end"]}, {row["word_count"]} words)'
+        print(f'{i}. {row["file_path"]} (chunk #{cid})')
+        print(f"   {section}")
+        print(f'   Origin: {row["origin"] or "unknown"} | Status: {row["status"] or "unknown"}')
+        if i < len(fused):
+            print()
+    if getattr(args, "expand", False):
+        _print_expansion(conn, [rows[c]["file_path"] for c in fused if c in rows])
+    return True
+
+
+def _print_expansion(conn, seed_files):
+    """Append the 1-hop knowledge-graph neighborhood of the result files (edges table)."""
+    seeds = list(dict.fromkeys(seed_files))
+    if not seeds:
+        return
+    qm = ",".join("?" for _ in seeds)
+    try:
+        rows = conn.execute(
+            f"SELECT src, verb, cls, dst FROM edges WHERE src IN ({qm}) OR dst IN ({qm})",
+            seeds + seeds,
+        ).fetchall()
+    except sqlite3.OperationalError:
+        return  # edges table absent (pre-Phase-2 DB)
+    seedset = set(seeds)
+    nbrs: dict = {}
+    for src, verb, cls, dst in rows:
+        if src in seedset and dst not in seedset:
+            nbrs.setdefault(dst, []).append(f"{Path(src).name} --{verb}-->")
+        elif dst in seedset and src not in seedset:
+            nbrs.setdefault(src, []).append(f"--{verb}--> {Path(dst).name}")
+    if not nbrs:
+        return
+    print()
+    print(f"— Graph neighborhood (1-hop, {len(nbrs)} related entries) —")
+    for n in sorted(nbrs, key=lambda k: -len(nbrs[k]))[:12]:
+        print(f"  {n}")
+        for h in nbrs[n][:3]:
+            print(f"      {h}")
 
 
 def cmd_search(args):
@@ -600,6 +949,12 @@ def cmd_search(args):
     query = args.query
     limit = args.top
 
+    # F2/F3: hybrid or semantic mode (falls through to keyword if embeddings unavailable)
+    mode = getattr(args, "mode", "hybrid")
+    if mode in ("hybrid", "semantic") and _EMBED_OK and _search_advanced(conn, args, mode):
+        conn.close()
+        return
+
     # Build the FTS5 query
     # Escape special FTS5 characters
     fts_query = re.sub(r'[^\w\s]', ' ', query).strip()
@@ -607,12 +962,14 @@ def cmd_search(args):
         print("Empty query after sanitization.", file=sys.stderr)
         sys.exit(1)
 
-    # Build WHERE clause for layer filter
+    # Build WHERE clause for layer filter (default scope = knowledge: raw+meta)
+    layers = _resolve_layers(args)
     where_clause = ""
     params: list = []
-    if args.layer:
-        where_clause = "AND c.layer = ?"
-        params.append(args.layer)
+    if layers:
+        ph = ",".join("?" for _ in layers)
+        where_clause = f"AND c.layer IN ({ph})"
+        params += list(layers)
 
     # Search with BM25 ranking
     sql = f"""
@@ -667,15 +1024,12 @@ def cmd_search(args):
             if any(term in heading_lower for term in query_terms_lower):
                 heading_boost = 0.3
 
-        # Layer boost
+        # Layer boost (within scope, gently prefer meta; strong boost for an explicit --layer)
         layer_boost = 0.0
-        if args.layer:
-            if row["layer"] == args.layer:
-                layer_boost = 0.5
-        else:
-            # Default: slightly prefer meta
-            if row["layer"] == "meta":
-                layer_boost = 0.2
+        if args.layer and row["layer"] == args.layer:
+            layer_boost = 0.5
+        elif row["layer"] == "meta":
+            layer_boost = 0.2
 
         # Recency boost
         recency_boost = 0.0
@@ -803,7 +1157,7 @@ def cmd_status(args):
                 if not dir_path.exists():
                     continue
                 for md_file in dir_path.rglob("*.md"):
-                    if any(part.startswith((".", "_")) for part in md_file.parts):
+                    if any(part.startswith(".") for part in md_file.parts):
                         continue
                     mtime = datetime.fromtimestamp(md_file.stat().st_mtime)
                     if mtime > rebuild_time:
@@ -841,7 +1195,7 @@ def main():
             """\
             Examples:
               uv run scripts/kb_search.py rebuild
-              uv run scripts/kb_search.py search "dose response model"
+              uv run scripts/kb_search.py search "dose response immunity"
               uv run scripts/kb_search.py search "coherence engine" --layer meta
               uv run scripts/kb_search.py read 42
               uv run scripts/kb_search.py status
@@ -862,12 +1216,27 @@ def main():
     search_parser = subparsers.add_parser("search", help="Search the knowledge base")
     search_parser.add_argument("query", help="Search query")
     search_parser.add_argument(
+        "--scope",
+        choices=["knowledge", "projects", "all"],
+        default="knowledge",
+        help="knowledge = raw+meta (default); projects = special_projects; all = everything. "
+             "special_projects (workshop) and views (derived) are excluded from knowledge queries.",
+    )
+    search_parser.add_argument(
         "--layer",
-        choices=["examples", "raw", "meta", "special_projects", "views"],
-        help="Filter results to a specific layer",
+        choices=["raw", "meta", "special_projects", "views"],
+        help="Filter to a single layer (overrides --scope)",
     )
     search_parser.add_argument(
         "--top", type=int, default=10, help="Maximum results (default: 10)"
+    )
+    search_parser.add_argument(
+        "--mode", choices=["hybrid", "keyword", "semantic"], default="hybrid",
+        help="Retrieval mode (default: hybrid = keyword + semantic + entity, fused via RRF)",
+    )
+    search_parser.add_argument(
+        "--expand", action="store_true",
+        help="append the 1-hop knowledge-graph neighborhood of the results (hybrid/semantic mode)",
     )
 
     # read

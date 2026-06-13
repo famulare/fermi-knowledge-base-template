@@ -307,6 +307,134 @@ def format_size(size_bytes: int) -> str:
         return f"{size_bytes}B"
 
 
+CONFIG_LABELS = {
+    "README.md": "Human-facing design document / getting-started",
+    "CLAUDE.md": "Project instructions for Claude Code (authoritative entry point)",
+    "FERMI.md": "Activates the knowledge-partner persona + loads contracts at session start",
+    "clauderc.json": "Claude Code skill registration",
+    "pyproject.toml": "Python project (uv); declares dependencies",
+    "uv.lock": "uv dependency lockfile",
+    ".gitignore": "Ignore rules (derived artifacts: kb_index.db, graph.json, .venv)",
+    "LICENSE": "License",
+}
+
+
+def _file_summary(path: Path) -> str:
+    """Best one-line summary of a file for the infra index (heading / docstring / comment)."""
+    try:
+        text = path.read_text(encoding="utf-8", errors="ignore")
+    except OSError:
+        return ""
+    if path.suffix == ".md":
+        flines = text.splitlines()
+        if flines and flines[0].strip() == "---":  # YAML frontmatter (skills): prefer description
+            for ln in flines[1:]:
+                if ln.strip() == "---":
+                    break
+                m = re.match(r"description:\s*(.+?)\s*$", ln.strip())
+                if m:
+                    return m.group(1).strip().strip('"').strip("'")
+        for ln in flines:
+            m = re.match(r"#\s+(.+)", ln.strip())
+            if m:
+                return m.group(1).strip()
+    elif path.suffix == ".py":
+        pre = re.match(r'(?:#![^\n]*\n)?(?:[ \t]*#[^\n]*\n|[ \t]*\n)*', text)
+        rest = text[pre.end():] if pre else text
+        for q in ('"""', "'''"):
+            if rest.startswith(q):
+                m = re.match(re.escape(q) + r"(.*?)" + re.escape(q), rest, re.S)
+                if m and m.group(1).strip():
+                    return m.group(1).strip().splitlines()[0].strip()
+                break
+    elif path.suffix == ".sh":
+        for ln in text.splitlines():
+            s = ln.strip()
+            if s.startswith("#") and not s.startswith("#!"):
+                return s.lstrip("#").strip()
+    return ""
+
+
+def _status_of(path: Path) -> str:
+    try:
+        text = path.read_text(encoding="utf-8", errors="ignore")
+    except OSError:
+        return ""
+    m = re.search(r"^\*\*Status:\*\*\s*(.+?)\s*$", text, re.M)
+    return m.group(1).strip() if m else ""
+
+
+def build_infra_section(repo_root: Path) -> list[str]:
+    """Filesystem-walked Infrastructure & Governance index (generated, drift-proof)."""
+    out: list[str] = [
+        "---", "", "## Infrastructure & Governance", "",
+        "> System scaffolding, indexed from the filesystem. Content domains are above; this "
+        "section makes the machinery, governance, config, and derived artifacts rediscoverable "
+        "from the router. Generated — do not hand-edit.", "",
+    ]
+
+    def gs(pat):
+        return sorted(repo_root.glob(pat))
+
+    scripts = gs("scripts/*.py") + gs("scripts/*.sh")
+    if scripts:
+        out.append("### Scripts (`scripts/`)")
+        for p in scripts:
+            s = _file_summary(p)
+            out.append(f"- `{p.name}`" + (f" — {s}" if s else ""))
+        out.append("")
+        out.append("See `scripts/README.md` for usage.")
+        out.append("")
+
+    contracts = gs("contracts/*.md")
+    if contracts:
+        out.append("### Contracts (`contracts/`)")
+        for p in contracts:
+            status = _status_of(p)
+            suffix = f" [{status}]" if status else ""
+            out.append(f"- `{p.name}` — {_file_summary(p)}{suffix}")
+        out.append("")
+
+    cfg = gs("config/*.yml") + gs("config/*.yaml") + gs("bin/*")
+    if cfg:
+        out.append("### Config & setup (`config/`, `bin/`)")
+        for p in cfg:
+            out.append(f"- `{p.relative_to(repo_root)}`")
+        out.append("")
+
+    idx = gs("index/*.md")
+    if idx:
+        out.append("### Index (`index/`)")
+        for p in idx:
+            s = _file_summary(p)
+            out.append(f"- `{p.name}`" + (f" — {s}" if s else ""))
+        out.append("- `kb_index.db` — derived SQLite (FTS5 + entities; embeddings if F2 enabled); gitignored, rebuildable")
+        out.append("")
+
+    wf = [p for p in gs(".claude/workflows/*.md") if p.stem != "README"]
+    if wf:
+        out.append("### Workflows (`.claude/workflows/`)")
+        out.append(", ".join(f"`{p.stem}`" for p in wf) + " — see `.claude/workflows/README.md`")
+        out.append("")
+
+    skills = gs(".claude/skills/*/SKILL.md")
+    if skills:
+        out.append("### Skills (`.claude/skills/`)")
+        for p in skills:
+            s = _file_summary(p)
+            out.append(f"- `{p.parent.name}`" + (f" — {s}" if s else ""))
+        out.append("")
+
+    proj = [n for n in CONFIG_LABELS if (repo_root / n).exists()]
+    if proj:
+        out.append("### Project (top-level)")
+        for n in proj:
+            out.append(f"- `{n}` — {CONFIG_LABELS[n]}")
+        out.append("")
+
+    return out
+
+
 def generate_router(repo_root: Path) -> str:
     """Generate the router markdown content."""
     files = walk_content(repo_root)
@@ -463,6 +591,8 @@ def generate_router(repo_root: Path) -> str:
                 "*No heading structure — read in ~2000-line chunks.*"
             )
         lines.append("")
+
+    lines.extend(build_infra_section(repo_root))
 
     return "\n".join(lines)
 

@@ -43,6 +43,17 @@ else
 fi
 echo ""
 
+# 2b. Knowledge graph (edges rebuilt in kb_index.db by step 2; refresh export + link_graph view)
+echo "→ Rebuilding knowledge graph (graph.json + link_graph view)..."
+if uv run scripts/kb_graph.py build 2>&1 | sed 's/^/  /' && \
+   uv run scripts/kb_graph.py render-link-graph 2>&1 | sed 's/^/  /'; then
+    echo "  ✓ Knowledge graph rebuilt"
+else
+    echo "  ✗ Knowledge graph rebuild failed"
+    FAIL=1
+fi
+echo ""
+
 # 3. Stale-check after rebuild
 echo "→ Verifying index is current..."
 STATUS_OUT=$(uv run scripts/kb_search.py status 2>/dev/null || echo "")

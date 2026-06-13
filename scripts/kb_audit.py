@@ -438,9 +438,9 @@ def check_crossrefs(
     edges: list[tuple[str, str]] = []
 
     for full_ref, file_part, line_num in refs:
-        # Skip teaching/placeholder paths (e.g. YYYY-MM-DD slugs, <angle-bracket> tokens)
-        # used in example entries to illustrate link structure without pointing at real files.
-        if "YYYY" in file_part or "<" in file_part or ">" in file_part:
+        # Skip teaching/placeholder paths (YYYY-MM-DD slugs, <angle-bracket> tokens, globs)
+        # used in example/template entries to illustrate link structure, not point at real files.
+        if "YYYY" in file_part or "<" in file_part or ">" in file_part or any(c in file_part for c in "*?[]"):
             continue
         edges.append((rel_path, file_part))
 
@@ -448,8 +448,10 @@ def check_crossrefs(
         if file_part not in corpus_paths:
             # Also check if it's a non-content file that exists on disk
             if not (repo_root / file_part).exists():
+                # Workshop docs (special_projects/) legitimately cite proposals/hypotheticals
+                sev = "WARNING" if rel_path.startswith("special_projects/") else "ERROR"
                 findings.append(Finding(
-                    "ERROR", "crossref", rel_path,
+                    sev, "crossref", rel_path,
                     f"Broken cross-reference at line {line_num}: `{full_ref}`",
                     f"File not found: {file_part}",
                 ))
@@ -763,6 +765,48 @@ def check_orphans(
 # Main audit orchestration
 # ---------------------------------------------------------------------------
 
+def check_graph(repo_root: Path, corpus_paths: set[str], findings: list[Finding]) -> None:
+    """Knowledge-graph integrity: dangling edge targets, unmapped verbs, and evidence-link
+    coverage (a worklist, NOT a confabulation verdict — topology can't establish fabrication)."""
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import kb_graph
+    except Exception:
+        return
+    edges = kb_graph.collect_edges(repo_root)
+    for e in edges:
+        for end in ("src", "dst"):
+            if e[end] not in corpus_paths:
+                findings.append(Finding(
+                    "ERROR", "graph", e[end],
+                    "knowledge-graph edge target missing on disk",
+                    f"{e['src']} --{e['verb']}--> {e['dst']}",
+                ))
+    unmapped = sorted({e["verb"] for e in edges if e.get("cls") is None})
+    for v in unmapped:
+        findings.append(Finding(
+            "WARNING", "graph", "(corpus-wide)",
+            f"edge verb not in registry: '{v}'",
+            "map it in index/edge_verbs.md (or scripts/kb_graph.py defaults)",
+        ))
+    inbound: dict[str, int] = defaultdict(int)
+    for e in edges:
+        if e.get("cls") == "evidential":
+            inbound[e["dst"]] += 1
+    nodes = {e["src"] for e in edges} | {e["dst"] for e in edges}
+    targets = [n for n in nodes if n.startswith(("meta/claims/", "meta/models/"))]
+    gaps = sorted(n for n in targets if inbound.get(n, 0) == 0)
+    if gaps:
+        findings.append(Finding(
+            "INFO", "graph", "(corpus-wide)",
+            f"{len(gaps)} meta claims/models have no inbound evidential edge "
+            "(evidence-link coverage worklist — NOT a confabulation verdict)",
+            "Review (many legitimately edge-less): "
+            + ", ".join(g.split("/")[-1] for g in gaps[:12])
+            + (f" ... +{len(gaps) - 12}" if len(gaps) > 12 else ""),
+        ))
+
+
 def run_audit(repo_root: Path) -> list[Finding]:
     """Run all audit checks and return findings."""
     findings: list[Finding] = []
@@ -819,6 +863,9 @@ def run_audit(repo_root: Path) -> list[Finding]:
 
     # Orphan detection
     check_orphans(corpus_paths, all_edges, findings)
+
+    # Knowledge-graph checks (dangling edges, unmapped verbs, evidence-link coverage)
+    check_graph(repo_root, corpus_paths, findings)
 
     # URL/DOI cross-file duplicates
     report_url_doi_findings(all_urls, all_dois, findings)
