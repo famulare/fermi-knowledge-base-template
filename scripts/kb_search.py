@@ -830,8 +830,9 @@ def _entity_ids(conn, query: str, layers, k: int) -> list[int]:
 
 def _resolve_layers(args) -> list[str] | None:
     """Layers to search. An explicit --layer wins; otherwise --scope maps to a set:
-    knowledge = raw+meta (default); projects = special_projects; all = no filter (None).
-    special_projects (workshop) and views (derived) are excluded from knowledge queries."""
+    knowledge = examples+raw+meta (default); projects = special_projects; all = no filter (None).
+    special_projects (workshop) and views (derived) are excluded from knowledge queries.
+    `examples/` is shipped knowledge content in this template, so it counts as knowledge."""
     if getattr(args, "layer", None):
         return [args.layer]
     scope = getattr(args, "scope", "knowledge")
@@ -839,7 +840,7 @@ def _resolve_layers(args) -> list[str] | None:
         return None
     if scope == "projects":
         return ["special_projects"]
-    return ["raw", "meta"]
+    return ["examples", "raw", "meta"]
 
 
 def _rrf(lists, k: int = 60) -> list[int]:
