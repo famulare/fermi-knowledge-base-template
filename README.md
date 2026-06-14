@@ -130,11 +130,13 @@ The SETUP workflow configures your name, timezone, and persona preferences. All 
 | `views/` | Navigation aids: recent ingests, query results, suggested reads |
 | `contracts/` | System contracts: persona profile, KB spec, configuration guide |
 | `config/` | User configuration |
-| `scripts/` | Infrastructure: router generator, hybrid search, knowledge-graph builder, structural audit (run with `uv`) |
+| `scripts/` | Infrastructure: router generator, hybrid search, knowledge-graph builder, structural audit, OKF export/import/validate (run with `uv`) |
 | `special_projects/` | Bounded work with its own structure (retrospectives, sprints, analyses) |
 | `examples/` | Curated example entries demonstrating each meta type |
 
 **Search & graph.** Retrieval is hybrid — FTS5 keyword + entity-match fused by reciprocal rank — and degrades gracefully to keyword-only with zero extra setup. Optional **semantic search** (local embeddings via llama.cpp) lives on a separate branch, for a recall boost when you want it. A **knowledge graph** is generated from each entry's `## Related` / `## Evidence` sections (`scripts/kb_graph.py`: typed edges across 7 relation classes, plus `neighbors` / `path` / `subgraph` queries and `--expand` in search). Entries that record a modeling judgment can carry optional `Reduction question (O)` + `Boundary` fields — capturing *which detail a model keeps vs. ignores, and where that judgment breaks* (see the `modeling-judgment` examples).
+
+**OKF interoperability.** This KB speaks [Open Knowledge Format](https://github.com/GoogleCloudPlatform/knowledge-catalog) (OKF v0.1). `scripts/okf_export.py` emits a conformant bundle (one concept per file, `index.md`/`log.md`, cross-links) carrying an **Epistemic Profile** overlay — `origin` / `status` / `layer` as frontmatter keys and typed relations as `rel:<verb>` link titles — all back-compatible additional keys a vanilla OKF tool ignores. `scripts/okf_import.py` consumes an external bundle *as quarantined evidence* (lands it append-only under `raw/`, proposes attributed synthesis for human review, never auto-trusts it). `scripts/okf_validate.py` checks base + profile conformance. See [`OKF_EPISTEMIC_PROFILE.md`](OKF_EPISTEMIC_PROFILE.md).
 
 ## Deeper Reading
 
