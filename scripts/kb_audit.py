@@ -210,6 +210,16 @@ EXTERNAL_ORIGIN_FIELDS = [
     ("Ingest Reason",),
 ]
 
+# Provenance fields (advisory; WARN/INFO only — see check_provenance_fields)
+# Evidence status expected on these meta types (grounding grade, not external validity):
+EVIDENCE_STATUS_TYPES: set[str] = {"claims", "models"}
+EVIDENCE_STATUS_VALUES: set[str] = {
+    "unsourced", "partially sourced", "sourced", "evidence-conflicted",
+}
+SENSITIVITY_VALUES: set[str] = {
+    "internal", "personal-view", "external-ready", "restricted",
+}
+
 # Valid base origin types (checked as prefix of origin value).
 # Identity comes from config/system.yml (user.name / persona.name); the shipped
 # placeholder "[UserName]" is accepted so example entries validate before SETUP.
@@ -382,6 +392,61 @@ def check_structural_compliance(
             findings.append(Finding(
                 severity, "structural", rel_path,
                 f"Missing expected section: ## {section_name.title()}",
+            ))
+
+
+# ---------------------------------------------------------------------------
+# A2. Provenance fields (advisory) — Evidence status, Sensitivity, SHA256
+# ---------------------------------------------------------------------------
+
+def check_provenance_fields(
+    rel_path: str, text: str, findings: list[Finding]
+) -> None:
+    """Advisory provenance checks (all WARN/INFO, never ERROR).
+
+    - meta claims/models: expect a valid **Evidence status:** value.
+    - any file: if **Sensitivity:** is present, it must be a valid value.
+    - raw/web/papers: a resolvable DOI/URL with no **SHA256:** is an INFO nudge.
+    """
+    # Skip template/scaffolding files (mirror check_structural_compliance)
+    base = rel_path.split("/")[-1]
+    if "_TEMPLATE" in rel_path or base.startswith("_") or base == "README.md":
+        return
+
+    fields = extract_fields(text)
+
+    # Evidence status (meta claims + models)
+    meta_type = detect_meta_type(rel_path)
+    if meta_type in EVIDENCE_STATUS_TYPES:
+        ev = fields.get("Evidence status") or fields.get("Evidence Status")
+        if ev is None:
+            findings.append(Finding(
+                "WARNING", "provenance", rel_path,
+                "Missing **Evidence status:** (unsourced | partially sourced | sourced | evidence-conflicted)",
+            ))
+        elif ev not in EVIDENCE_STATUS_VALUES:
+            findings.append(Finding(
+                "WARNING", "provenance", rel_path,
+                f"Invalid Evidence status value: '{ev}'",
+                f"Valid values: {', '.join(sorted(EVIDENCE_STATUS_VALUES))}",
+            ))
+
+    # Sensitivity (any file; validated only when present — default is `internal`)
+    sens = fields.get("Sensitivity")
+    if sens is not None and sens not in SENSITIVITY_VALUES:
+        findings.append(Finding(
+            "WARNING", "provenance", rel_path,
+            f"Invalid Sensitivity value: '{sens}'",
+            f"Valid values: {', '.join(sorted(SENSITIVITY_VALUES))}",
+        ))
+
+    # SHA256 for re-fetchable papers (Port 4) — INFO nudge only
+    if rel_path.startswith("raw/web/papers/"):
+        has_identifier = bool(fields.get("DOI") or fields.get("URL"))
+        if has_identifier and not fields.get("SHA256"):
+            findings.append(Finding(
+                "INFO", "provenance", rel_path,
+                "Paper has a resolvable DOI/URL but no **SHA256:** for re-fetch verification",
             ))
 
 
@@ -844,6 +909,9 @@ def run_audit(repo_root: Path) -> list[Finding]:
         # A. Structural compliance (meta/ only)
         check_structural_compliance(rel_path, text, findings, repo_root)
 
+        # A2. Provenance fields (advisory: Evidence status, Sensitivity, SHA256)
+        check_provenance_fields(rel_path, text, findings)
+
         # B. Cross-reference validity (all files)
         edges = check_crossrefs(rel_path, text, corpus_paths, repo_root, findings)
         all_edges.extend(edges)
@@ -857,6 +925,15 @@ def run_audit(repo_root: Path) -> list[Finding]:
 
         # F. URL/DOI patterns (all files)
         check_urls_and_dois(rel_path, text, all_urls, all_dois, findings)
+
+    # A3. Orphaned JSON provenance sidecars (retired; provenance is inline — transitional INFO)
+    prov_dir = repo_root / "raw" / "provenance"
+    if prov_dir.exists():
+        for p in sorted(prov_dir.glob("*.json")):
+            findings.append(Finding(
+                "INFO", "provenance", str(p.relative_to(repo_root)),
+                "Retired JSON provenance sidecar — fold into the record's header block and delete",
+            ))
 
     # E. Index staleness
     check_index_staleness(corpus_paths, repo_root, findings)

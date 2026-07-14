@@ -4,6 +4,8 @@
 
 **Origin:** Co-created ([UserName] + Fermi (‹model›))
 **Status:** Active
+
+**Evidence status:** unsourced
 **Tags:** ai-cognition, methodology
 
 ---

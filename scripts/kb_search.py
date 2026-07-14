@@ -94,6 +94,8 @@ def create_schema(conn: sqlite3.Connection):
             sublayer     TEXT,
             origin       TEXT,
             status       TEXT,
+            evidence_status TEXT,
+            sensitivity  TEXT,
             date         TEXT,
             file_size    INTEGER NOT NULL,
             embedding    BLOB
@@ -163,9 +165,11 @@ def classify_layer(rel_path: str) -> tuple[str, str | None]:
 
 
 def extract_metadata(text: str) -> dict[str, str | None]:
-    """Extract Origin and Status fields from file content."""
+    """Extract Origin, Status, Evidence status, and Sensitivity fields from file content."""
     origin = None
     status = None
+    evidence_status = None
+    sensitivity = None
 
     for line in text.split("\n")[:50]:  # Only check first 50 lines
         line = line.strip()
@@ -177,8 +181,21 @@ def extract_metadata(text: str) -> dict[str, str | None]:
             status = line.replace("**Status:**", "").strip()
         elif line.startswith("Status:"):
             status = line.replace("Status:", "").strip()
+        # Evidence status (tolerant of bold markers and "status"/"Status" casing)
+        m = re.match(r"\*{0,2}Evidence [Ss]tatus:\*{0,2}\s*(.*)", line)
+        if m:
+            evidence_status = m.group(1).strip()
+        if line.startswith("**Sensitivity:**"):
+            sensitivity = line.replace("**Sensitivity:**", "").strip()
+        elif line.startswith("Sensitivity:"):
+            sensitivity = line.replace("Sensitivity:", "").strip()
 
-    return {"origin": origin, "status": status}
+    return {
+        "origin": origin,
+        "status": status,
+        "evidence_status": evidence_status,
+        "sensitivity": sensitivity,
+    }
 
 
 # --- Chunking ---
@@ -235,6 +252,8 @@ def chunk_file(filepath: Path, repo_root: Path) -> list[dict]:
                 "sublayer": sublayer,
                 "origin": meta["origin"],
                 "status": meta["status"],
+                "evidence_status": meta["evidence_status"],
+                "sensitivity": meta["sensitivity"],
                 "date": date,
                 "file_size": file_size,
             }
@@ -269,6 +288,8 @@ def chunk_file(filepath: Path, repo_root: Path) -> list[dict]:
                 "sublayer": sublayer,
                 "origin": meta["origin"],
                 "status": meta["status"],
+                "evidence_status": meta["evidence_status"],
+                "sensitivity": meta["sensitivity"],
                 "date": date,
                 "file_size": file_size,
             }
@@ -334,6 +355,8 @@ def chunk_file(filepath: Path, repo_root: Path) -> list[dict]:
                     "sublayer": sublayer,
                     "origin": file_meta["origin"],
                     "status": file_meta["status"],
+                    "evidence_status": file_meta["evidence_status"],
+                    "sensitivity": file_meta["sensitivity"],
                     "date": date,
                     "file_size": file_size,
                 }
@@ -399,6 +422,8 @@ def split_oversized_section(
                         "sublayer": sublayer,
                         "origin": file_meta["origin"],
                         "status": file_meta["status"],
+                        "evidence_status": file_meta["evidence_status"],
+                        "sensitivity": file_meta["sensitivity"],
                         "date": date,
                         "file_size": file_size,
                     }
@@ -429,8 +454,9 @@ def _index_files(conn: sqlite3.Connection, md_files: list[Path], repo_root: Path
                 INSERT INTO chunks (
                     file_path, heading, heading_level,
                     line_start, line_end, word_count, content,
-                    layer, sublayer, origin, status, date, file_size
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    layer, sublayer, origin, status, evidence_status, sensitivity,
+                    date, file_size
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     chunk["file_path"],
@@ -444,6 +470,8 @@ def _index_files(conn: sqlite3.Connection, md_files: list[Path], repo_root: Path
                     chunk["sublayer"],
                     chunk["origin"],
                     chunk["status"],
+                    chunk["evidence_status"],
+                    chunk["sensitivity"],
                     chunk["date"],
                     chunk["file_size"],
                 ),
@@ -893,7 +921,9 @@ def _search_advanced(conn, args, mode: str) -> bool:
         section += f'(lines {row["line_start"]}-{row["line_end"]}, {row["word_count"]} words)'
         print(f'{i}. {row["file_path"]} (chunk #{cid})')
         print(f"   {section}")
-        print(f'   Origin: {row["origin"] or "unknown"} | Status: {row["status"] or "unknown"}')
+        _ev = row["evidence_status"]
+        _ev_str = f' | Evidence: {_ev}' if _ev else ""
+        print(f'   Origin: {row["origin"] or "unknown"} | Status: {row["status"] or "unknown"}{_ev_str}')
         if i < len(fused):
             print()
     if getattr(args, "expand", False):
@@ -986,6 +1016,8 @@ def cmd_search(args):
             c.sublayer,
             c.origin,
             c.status,
+            c.evidence_status,
+            c.sensitivity,
             c.date,
             c.file_size,
             rank
@@ -1060,10 +1092,12 @@ def cmd_search(args):
 
         origin_info = row["origin"] or "unknown"
         status_info = row["status"] or "unknown"
+        ev_info = row["evidence_status"]
+        ev_str = f" | Evidence: {ev_info}" if ev_info else ""
 
         print(f'{i}. [{score:.2f}] {row["file_path"]} (chunk #{row["chunk_id"]})')
         print(f"   {section_info}")
-        print(f"   Origin: {origin_info} | Status: {status_info}")
+        print(f"   Origin: {origin_info} | Status: {status_info}{ev_str}")
         if i < len(scored_rows):
             print()
 
@@ -1097,6 +1131,7 @@ def cmd_read(args):
     heading_display = row["heading"] or "(preamble)"
     origin_display = row["origin"] or "unknown"
     status_display = row["status"] or "unknown"
+    evidence_display = row["evidence_status"]
     date_display = row["date"] or "unknown"
 
     print(f"--- Chunk #{row['chunk_id']} ---")
@@ -1104,7 +1139,8 @@ def cmd_read(args):
     print(
         f"Section: {heading_display} (lines {row['line_start']}-{row['line_end']})"
     )
-    print(f"Origin: {origin_display} | Status: {status_display} | Date: {date_display}")
+    _ev = f" | Evidence: {evidence_display}" if evidence_display else ""
+    print(f"Origin: {origin_display} | Status: {status_display}{_ev} | Date: {date_display}")
     print(f"Words: {row['word_count']}")
     print("---")
     print()

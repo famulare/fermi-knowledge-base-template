@@ -1,7 +1,7 @@
 # Knowledge Base System Specification
 **System:** KB (local-first, markdown-native)
 **Persona:** Fermi
-**Status:** v1.2 (TEMPLATE)
+**Status:** v1.3 (TEMPLATE)
 **Constraint:** Local-first; markdown + git, no external service dependencies
 
 ---
@@ -34,13 +34,12 @@ Current layout:
 │   ├── notes/
 │   ├── files/
 │   ├── web/                    # papers/, blogs/, reports/, docs/
-│   ├── curated/                # External content [UserName] finds interesting
-│   │   ├── papers/
-│   │   ├── posts/
-│   │   ├── repos/
-│   │   ├── artifacts/
-│   │   └── other/
-│   └── provenance/
+│   └── curated/                # External content [UserName] finds interesting
+│       ├── papers/
+│       ├── posts/
+│       ├── repos/
+│       ├── artifacts/
+│       └── other/
 │
 ├── meta/
 │   ├── maps/
@@ -136,6 +135,33 @@ The system uses a **retrieval-gated architecture** to scale beyond context-windo
 
 ---
 
+## 2.4 Provenance (single inline surface)
+
+- **Single in-file metadata surface.** The in-file prose bold-key header block (`**Origin:**`,
+  `**Status:**`, …) is the canonical machine-audited provenance surface (parsed by
+  `kb_search.py::extract_metadata` and `kb_audit.py::extract_fields`). Provenance is always
+  **prose-header fields in a markdown record** — never JSON. Content you can annotate carries its
+  provenance **inline**: single-source ingests in the record's own header, repo ingests in the single
+  `raw/repos/YYYY-MM-DD_slug.md` record (per `INGEST_REPO.md`). Content you **cannot** annotate — a
+  binary original, or a verbatim external import (a retained repo tree, an OKF bundle under
+  `raw/curated/okf/`) — carries its provenance in a single **companion `.md` record** alongside it,
+  in the same prose-header format. There are no JSON sidecars and no per-file provenance duplication.
+- **`Evidence status` field.** Meta **claims + models** carry `**Evidence status:**` ∈ {`unsourced`,
+  `partially sourced`, `sourced`, `evidence-conflicted`}. Grades *grounding only* (traceability to
+  ingested raw records) — not external/literature validity. Advisory audit (WARN if missing/invalid).
+- **`Sensitivity` + `Source use constraints`.** Optional on any record; `Sensitivity` ∈ {`internal`,
+  `personal-view`, `external-ready`, `restricted`}, defaulting to `internal` when absent. Free-text
+  `Source use constraints`. Captured for sharing hygiene; **not enforced**.
+- **SHA256 / byte-retention.** Records store the source `**SHA256:**`. For a re-fetchable paper
+  (resolvable DOI/URL), keep `DOI`/`URL` + `SHA256` and do **not** retain the byte PDF; irreplaceable
+  sources retain bytes.
+- **Preserved:** the inline quantitative-parameter provenance rule (`(source: Table 2, p.12)` beside
+  every extracted number) — see CLAUDE.md.
+
+All provenance-field audit checks are **WARN/INFO only** — no ERRORs, no gates.
+
+---
+
 ## 3. Ingest Pathways (Alpha)
 
 ### 3.1 Chat Save Points
@@ -160,7 +186,7 @@ Fermi:
 ### 3.3 File Import
 Fermi:
 - stores files under `raw/files/`,
-- creates provenance sidecars,
+- records provenance **inline** in the record's prose-header block (no JSON sidecars — see §2.4); for a binary original with no semantic `.md`, creates a companion `.md` source record carrying the header block,
 - generates meta summaries with origin-labeled ideas.
 
 ---
@@ -306,6 +332,8 @@ Avoid tag or link proliferation.
   - `Original Source`: URL, publication, etc.
   - `Ingest Reason`: Why [UserName] found this interesting
   - `Ingest Date`: Date ingested
+- Beyond origin, meta claims/models also carry an `Evidence status` grounding grade, and any record
+  may carry `Sensitivity` / `Source use constraints` (see §2.4).
 
 ---
 
@@ -382,6 +410,8 @@ All meta-layer artifacts must include a `**Status:**` field with a single canoni
 ## Version History
 
 This contract is the template's own lineage, generalized from a working knowledge base instance.
+
+**v1.3 (TEMPLATE):** Provenance — single inline surface. Added §2.4: provenance is always prose-header fields in a markdown record (no JSON sidecars, no dedicated provenance files; `raw/provenance/` removed); `Evidence status` field on meta claims/models; `Sensitivity` + `Source use constraints`; SHA256/byte-retention rule. Extended `kb_search.py` (evidence_status/sensitivity columns) and `kb_audit.py` (advisory WARN/INFO checks); updated INGEST_FILE/INGEST_WEB and CLAUDE.md. Ported from the working instance's provenance hardening.
 
 **v1.2 (TEMPLATE):** Hybrid search (keyword+entity; semantic optional via the llama.cpp branch), knowledge graph (`kb_graph` + `edge_verbs` + link-graph view + `--expand`), modeling-judgment `Reduction question (O)`/`Boundary` fields, `--scope`, router Infrastructure & Governance section, `kb_audit` graph checks. Ported from the working instance's graph generation.
 

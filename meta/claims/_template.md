@@ -12,6 +12,14 @@
 
 **Status:** [Draft | Active | Exploratory | Reflection | Superseded | Archived]
 
+**Evidence status:** [unsourced | partially sourced | sourced | evidence-conflicted]
+
+<!-- Evidence status grades GROUNDING only (not external/literature validity): sourced = non-trivial claims trace to ingested raw records; partially sourced = some trace, some are inference; unsourced = hypothesis/working memory, not yet traceable; evidence-conflicted = ingested sources disagree. -->
+
+<!-- OPTIONAL — Sensitivity defaults to `internal` when omitted: -->
+<!-- **Sensitivity:** internal | personal-view | external-ready | restricted -->
+<!-- **Source use constraints:** [free text, e.g. "do not quote outside KB"] -->
+
 <!-- OPTIONAL — include the next two fields for entries whose core content is a modeling/analysis judgment (then also add the file to the `modeling-judgment` tag in index/tags.md): -->
 <!-- **Reduction question (O):** the question this keep/ignore judgment is relative to -->
 <!-- **Boundary:** the regime where the judgment holds; the condition/parameter where it BREAKS. If genuinely uncharacterized, write: [gap: boundary not stated] -->

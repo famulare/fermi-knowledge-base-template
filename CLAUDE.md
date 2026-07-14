@@ -32,7 +32,7 @@ The system maintains two conceptually distinct but coupled layers:
    - Preserves original inputs or minimally transformed captures
    - Treated as evidence
    - Append-only except for redaction or provenance fixes
-   - Contains: `chats/`, `notes/`, `files/`, `curated/`, `provenance/`
+   - Contains: `chats/`, `notes/`, `files/`, `curated/` (provenance lives inline in each record's header block — no JSON sidecars; see spec §2.4)
 
 2. **Meta Layer** (`meta/`): Interpretive structure
    - Organizes raw material into conceptual maps, models, claims, contradictions, and timelines
@@ -131,6 +131,20 @@ When extracting quantitative parameters (rates, thresholds, coefficients, confid
 
 This prevents the dominant error pattern: numbers appearing in extractions with no traceable origin, making it impossible to verify correctness. Confidence intervals are especially vulnerable to fabrication during extraction.
 
+### Evidence Status & Sensitivity
+
+In addition to `Origin`, records carry two lightweight fields (spec §2.4):
+
+- **`Evidence status`** on meta **claims + models** — `unsourced | partially sourced | sourced |
+  evidence-conflicted`. Grades *grounding only* (traceability to ingested raw records), not
+  external/literature validity. Advisory audit (WARN if missing/invalid).
+- **`Sensitivity`** (any record) — `internal | personal-view | external-ready | restricted`,
+  default `internal`; optional free-text `Source use constraints`. Sharing hygiene, not enforced.
+
+Provenance lives **inline** in the record's prose-header block — the single machine-audited surface.
+No JSON sidecars. For a re-fetchable paper (resolvable DOI/URL), keep `DOI`/`URL` + `SHA256` instead
+of retaining the byte PDF; irreplaceable sources keep bytes.
+
 ---
 
 ## Operating Modes
@@ -198,7 +212,7 @@ Workflows provide:
 **Standard ingest components:**
 1. **Chat Save Points**: Condensed raw capture + meta entries with origin labels
 2. **Pasted Markdown**: Store verbatim under `raw/notes/`, produce meta summaries with claims, assumptions, uncertainties, connections, origin attribution
-3. **File Import**: Store under `raw/files/`, create provenance sidecars, generate origin-labeled meta summaries
+3. **File Import**: Store under `raw/files/`, record provenance inline in the record's header block (no JSON sidecars; binary originals get a companion `.md` source record — see spec §2.4), generate origin-labeled meta summaries
 4. **Repository ingest**: Store in `raw/repos/` with structured template, extract architecture/goals/tradeoffs
 5. **Web content ingest**: Store in `raw/web/{type}/` with content-type detection, extract papers/blogs/reports/docs with specialized templates
 6. **Curated external content**: Store in `raw/curated/{type}/` with External attribution, requires "why" reason for ingestion

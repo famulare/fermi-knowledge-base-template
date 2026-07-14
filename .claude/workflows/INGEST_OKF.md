@@ -40,7 +40,7 @@ This **fails closed** on unsafe input (symlinks, path traversal, oversize/too-ma
 non-UTF-8). On success it:
 - copies the bundle **verbatim** to `raw/curated/okf/<name>/` (append-only; refuses to
   overwrite an existing import without `--force`);
-- writes `_PROVENANCE.md` (`Origin: External (<org>)`, source, ingest date, trust note);
+- writes a companion source record `_source.md` (`Origin: External (<org>)`, source, ingest date, trust note);
 - writes a **synthesis proposal** to `views/ephemeral/okf-import-<name>.md`.
 
 Use `--dry-run` first to preview counts and the landing path.

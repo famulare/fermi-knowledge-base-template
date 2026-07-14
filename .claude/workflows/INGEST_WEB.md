@@ -417,6 +417,15 @@ Focus on conceptual understanding, not exhaustive API details."
 
 ### Step 7: Store in Raw Layer
 
+**Byte-retention rule.** Record the source `**SHA256:**` in the record header. For a paper with a
+**resolvable DOI/URL**, do **not** retain the byte PDF — the `DOI`/`URL` + `SHA256` let the exact
+source be re-fetched and verified. Only **irreplaceable** sources (private/unpublished material,
+one-off exports) keep the byte original.
+
+```bash
+shasum -a 256 downloaded.pdf   # record into **SHA256:**; then discard the PDF if re-fetchable
+```
+
 **File naming:**
 
 Scientific papers:
@@ -459,10 +468,12 @@ raw/web/misc/YYYY-MM-DD_title-slug.md
 
 **URL:** [original URL]
 **DOI:** [if available]
+**SHA256:** [sha256 of the source PDF — see retention rule below]
 **Journal/Venue:** [Journal Name] (or preprint server)
 **Publication Date:** YYYY-MM-DD
 **Ingest Date:** YYYY-MM-DD
 **Type:** [Research Article | Review | Preprint | Working Paper]
+**Sensitivity:** internal | personal-view | external-ready | restricted
 
 **Authors:**
 - [First Author] (affiliation)

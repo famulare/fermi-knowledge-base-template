@@ -8,6 +8,8 @@
 
 **Status:** Active
 
+**Evidence status:** sourced
+
 **Tags:** ai-cognition, llm-phenomenology
 
 ---

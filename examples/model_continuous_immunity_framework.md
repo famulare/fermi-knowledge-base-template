@@ -2,6 +2,8 @@
 
 **Origin:** [UserName]
 **Status:** Active
+
+**Evidence status:** unsourced
 **Tags:** immunology, dose-response
 **Source:** a presentation on better defaults for immunity modeling
 

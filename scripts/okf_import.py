@@ -8,7 +8,7 @@ and possibly agent-generated, so it is NEVER trusted as fact on import. This too
      non-UTF-8) and **fails closed**.
   2. Lands the bundle VERBATIM under `raw/curated/okf/<name>/` (append-only evidence;
      refuses to overwrite an existing import).
-  3. Writes a provenance sidecar (`Origin: External (<org>)`, source, ingest date/reason).
+  3. Writes a companion source record `_source.md` (`Origin: External (<org>)`, source, ingest date/reason).
   4. Emits a **synthesis proposal** to `views/ephemeral/` listing each concept as a *candidate*
      for human review — suggested meta type/title, `Origin: External/Co-created`, `Status: Draft`,
      linked back to the quarantined raw. It does NOT write meta/ entries: promotion to
@@ -98,9 +98,9 @@ def import_bundle(bundle: Path, repo: Path, org: str, source: str, reason: str,
         out.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(p, out)  # copyfile (not copy2): no symlink follow, data only
 
-    # 3. provenance sidecar
-    (dest / "_PROVENANCE.md").write_text(
-        f"# Provenance — imported OKF bundle `{name}`\n\n"
+    # 3. companion source record (inline provenance for a verbatim import — no sidecars)
+    (dest / "_source.md").write_text(
+        f"# Source record — imported OKF bundle `{name}`\n\n"
         f"**Origin:** External ({org})\n\n"
         f"**Original Source:** {source or '[unknown]'}\n\n"
         f"**Ingest Reason:** {reason or '[not stated]'}\n\n"

@@ -70,41 +70,45 @@ cp "[source_path]" "raw/files/YYYY-MM-DD_[filename].ext"
 
 ---
 
-### Step 3: Create Provenance Sidecar
+### Step 3: Record Provenance Inline (no JSON sidecars)
 
-**File naming:** `raw/provenance/YYYY-MM-DD_[original-filename].json`
+Provenance lives in the **in-file prose bold-key header block** of the record — the single
+machine-audited surface (parsed by `kb_search.py` and `kb_audit.py`). **Do not create a
+`raw/provenance/*.json` sidecar** (that format is retired; nothing parsed it).
 
-**Generate metadata:**
-```json
-{
-  "original_filename": "filename.ext",
-  "original_path": "/path/to/source/file",
-  "ingested_date": "YYYY-MM-DD",
-  "ingested_time": "HH:MM:SS",
-  "source_description": "user description or context",
-  "file_type": "pdf|image|data|document|text",
-  "checksum_sha256": "computed_hash",
-  "size_bytes": 12345,
-  "size_human": "1.2MB",
-  "kb_location": "raw/files/YYYY-MM-DD_filename.ext",
-  "metadata": {
-    "author": "if_extractable",
-    "created_date": "if_extractable",
-    "modified_date": "from_filesystem",
-    "title": "if_extractable",
-    "pages": "if_pdf",
-    "dimensions": "if_image",
-    "format_version": "if_applicable"
-  },
-  "extraction_notes": "any issues or special handling"
-}
+**Two cases:**
+
+**A. Text/markdown record exists** (extraction `.md`, note, paper) — put the provenance block at
+the top of that record, right under the H1:
+
+```markdown
+# <Title>
+
+**Source:** raw/files/YYYY-MM-DD_filename.ext
+**Original filename:** filename.ext
+**Original path:** /path/to/source/file
+**Origin:** <origin label>
+**Ingest Date:** YYYY-MM-DD
+**Ingest Method:** <how extracted, e.g. pandoc / Read tool / WebFetch>
+**SHA256:** <sha256 of the source>     # see Step 3b
+**Size:** <human> (<bytes> bytes)
+**Sensitivity:** internal | personal-view | external-ready | restricted
+**Source use constraints:** <free text, or omit>
+
+---
 ```
 
-**Write provenance:**
+**B. Binary original with no semantic `.md`** (e.g. a `.docx`/`.pdf` kept as bytes) — create a
+**companion source record** `raw/files/YYYY-MM-DD_<name>.md` carrying the same header block plus a
+short "## Note" pointing to the byte original and to any meta entries that extracted its content.
+
+**Step 3b — SHA256 and retention.** Always record the source `SHA256`. For **re-fetchable**
+sources (resolvable DOI/URL), keep `**DOI:**`/`**URL:**` + `**SHA256:**` and do **not** retain the
+byte original. For **irreplaceable** sources (private/unpublished material, one-off exports) retain
+the byte original and note why.
+
 ```bash
-cat > "raw/provenance/YYYY-MM-DD_filename.json" << 'EOF'
-[json content]
-EOF
+shasum -a 256 "path/to/source/file"   # capture into **SHA256:**
 ```
 
 ---
@@ -311,7 +315,7 @@ Primary source:
 - `raw/files/YYYY-MM-DD_[filename].ext` (full file)
 - `raw/files/YYYY-MM-DD_[filename].ext:page-3` (specific location)
 
-Provenance: `raw/provenance/YYYY-MM-DD_[filename].json`
+Provenance: inline in the record header (see Step 3)
 ```
 
 **For PDFs, use page numbers:**
@@ -375,7 +379,7 @@ Provenance: `raw/provenance/YYYY-MM-DD_[filename].json`
 ### YYYY-MM-DD: [Filename or Title]
 **Type:** File ([pdf|image|data|document])
 **Raw location:** raw/files/YYYY-MM-DD_[filename].ext
-**Provenance:** raw/provenance/YYYY-MM-DD_[filename].json
+**Provenance:** inline in the record header (or companion `.md` record for binaries)
 **Original author:** [if applicable - paper author, dataset creator]
 **Meta entries:**
   - meta/claims/[...].md (Origin: [UserName], ingested from [Author])
@@ -403,7 +407,7 @@ uv run scripts/generate_router.py
 **File imported successfully**
 
 Stored: raw/files/YYYY-MM-DD_[filename].ext ([size])
-Provenance: raw/provenance/YYYY-MM-DD_[filename].json
+Provenance: recorded inline in the record header
 
 **Content extracted:**
 [Summary of what was extracted - e.g., "PDF with 15 pages, extracted 3 key
@@ -515,7 +519,7 @@ Content analysis:
 
 Storing...
 ✓ raw/files/2026-01-22_mechanism_paper_2024.pdf
-✓ raw/provenance/2026-01-22_mechanism_paper_2024.json
+✓ raw/files/2026-01-22_mechanism_paper_2024.md (extraction + inline provenance)
 
 Extracting structure...
 ✓ meta/claims/2026-01-22_mechanism-x-causes-y.md
@@ -555,7 +559,7 @@ Visual analysis:
 
 Storing...
 ✓ raw/files/2026-01-22_system_architecture.png
-✓ raw/provenance/2026-01-22_system_architecture.json
+✓ raw/files/2026-01-22_system_architecture.md (companion record + inline provenance)
 
 This diagram appears to illustrate [existing model or new concept].
 
@@ -590,7 +594,7 @@ Structure analysis:
 
 Storing...
 ✓ raw/files/2026-01-22_experiment_results.csv
-✓ raw/provenance/2026-01-22_experiment_results.json
+✓ raw/files/2026-01-22_experiment_results.md (companion record + inline provenance)
 
 Creating dataset documentation...
 ✓ meta/maps/experiment-results-2024.md

@@ -19,7 +19,7 @@ This directory contains comprehensive workflow documentation for all Fermi KB op
 - **INGEST_FILE.md** - Import files (PDFs, images, datasets, documents)
   - Trigger: User references file or "ingest this file"
   - Supports: PDFs, images, CSV/JSON, text documents
-  - Creates: `raw/files/` + `raw/provenance/` + meta summaries
+  - Creates: `raw/files/` (provenance inline in each record's header) + meta summaries
 
 - **INGEST_REPO.md** - Ingest GitHub repositories
   - Trigger: User provides GitHub URL or "ingest this repository"

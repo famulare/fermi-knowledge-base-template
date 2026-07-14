@@ -8,6 +8,8 @@
 
 **Status:** Active
 
+**Evidence status:** sourced
+
 **Tags:** immunology, dose-response
 
 **Reduction question (O):** How does vaccine efficacy vary across transmission settings, and what must a dose-response model represent to capture it?

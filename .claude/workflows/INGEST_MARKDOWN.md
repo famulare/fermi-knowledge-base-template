@@ -191,7 +191,7 @@ Connections detected:
 ### External Material (articles, papers, etc.)
 - Origin attribution: [UserName] (he chose to ingest it, making it part of his KB)
 - Note source in meta entries: "Origin: [UserName] (ingested from [author/source])"
-- Consider adding to `raw/provenance/` with metadata if significant
+- Record provenance inline in the record's header block (Origin, Ingest Date, Source; no JSON sidecars)
 
 ### Raw Observations vs Structured Arguments
 - **Raw observations:** May skip meta extraction if no claims/models present

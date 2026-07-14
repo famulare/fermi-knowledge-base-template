@@ -10,6 +10,8 @@
 
 **Status:** Active
 
+**Evidence status:** sourced
+
 **Tags:** immunology, dose-response
 
 **Reduction question (O):** How should immunity be represented in transmission / vaccine-efficacy models?
